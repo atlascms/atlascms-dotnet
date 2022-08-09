@@ -35,4 +35,8 @@
     <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="108.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Fields\" />
+  </ItemGroup>
+
 </Project>
