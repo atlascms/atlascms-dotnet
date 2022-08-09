@@ -16,32 +16,32 @@ namespace Atlas.Core.Models
         /// <summary>
         /// Content Locale
         /// </summary>
-        public string Locale { get; }
+        public string Locale { get; private set; }
 
         /// <summary>
         /// Created At (UTC Date)
         /// </summary>
-        public DateTime CreatedAt { get; }
+        public DateTime CreatedAt { get; private set; }
 
         /// <summary>
         /// Created By
         /// </summary>
-        public string CreatedBy { get; }
+        public string CreatedBy { get; private set; }
 
         /// <summary>
         /// Modified At (UTC Date)
         /// </summary>
-        public DateTime ModifiedAt { get; }
+        public DateTime ModifiedAt { get; private set; }
 
         /// <summary>
         /// Modified By
         /// </summary>
-        public string ModifiedBy { get; }
+        public string ModifiedBy { get; private set; }
 
         /// <summary>
         /// Content Hash
         /// </summary>
-        public string Hash { get; }
+        public string Hash { get; private set; }
 
         /// <summary>
         /// Content Data
@@ -51,6 +51,6 @@ namespace Atlas.Core.Models
         /// <summary>
         /// Available Translations
         /// </summary>
-        public List<ContentLocale> Locales { get; set; } = new List<ContentLocale>();
+        public List<ContentLocale> Locales { get; private set; } = new List<ContentLocale>();
     }
 }

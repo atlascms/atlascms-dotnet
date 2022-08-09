@@ -6,10 +6,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atlas.Core.Extensionis
+namespace Atlas.Core.Extensions
 {
     public static class RequestExtensions
     {
+        private const string AuthParameter = "Authorization";
+
+        public static RestRequest AddBearerToken(this RestRequest request, string token)
+        {
+            if (request.Parameters.Any(p => p.Name == AuthParameter))
+            {
+                request.Parameters.RemoveParameter(AuthParameter);
+            }
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.AddHeader(AuthParameter, $"Bearer {token}");
+            }
+
+            return request;
+        }
+
         public static RestRequest AddQuery(this RestRequest request, ContentsQuery query)
         {
             if (query == null)

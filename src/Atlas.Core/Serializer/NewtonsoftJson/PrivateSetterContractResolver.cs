@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atlas.Core.Sereializer.NewtonsoftJson
+namespace Atlas.Core.Serializer.NewtonsoftJson
 {
     public class PrivateSetterContractResolver : CamelCasePropertyNamesContractResolver
     {

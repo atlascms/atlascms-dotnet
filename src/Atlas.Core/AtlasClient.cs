@@ -1,5 +1,5 @@
 ﻿using Atlas.Core.Configuration;
-using Atlas.Core.Extensionis;
+using Atlas.Core.Extensions;
 using Atlas.Core.Models;
 using Atlas.Core.Models.Collections;
 using Atlas.Core.Models.Queries;
@@ -18,9 +18,12 @@ namespace Atlas.Core
     {
         public AtlasClient(AtlasOptions options)
         {
+            _options = options;
             _http = new RestClient(options.BaseUrl);
             _http.UseNewtonsoftJson(options.SerializerOptions);
         }
+
+        #region -- contents --
 
         public async Task<string> CreateContent<T>(string modelKey, T content, CancellationToken cancellation = default) where T : Content<T>
         {
@@ -32,49 +35,62 @@ namespace Atlas.Core
             throw new NotImplementedException();
         }
 
-        public async Task<Asset> GetAsset(string id, CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<PagedList<Asset>> GetAssets(AssetsQuery query, CancellationToken cancellation = default)
-        {
-            var request = new RestRequest("/api/media-library/media")
-                                                                .AddQuery(query);
-
-
-
-            var response = await _http.GetAsync<PagedList<Asset>>(request, cancellation);
-
-            return response;
-        }
-
         public async Task<Content<T>> GetContent<T>(string modelKey, string id, CancellationToken cancellation = default) where T : class
         {
-            var request = new RestRequest("/api/contents/{model}/{id}")
-                                .AddUrlSegment("model", modelKey)
-                                .AddUrlSegment("id", id);
+            var request = new RestRequest("/api/contents/{model}/{id}").AddUrlSegment("model", modelKey).AddUrlSegment("id", id);
 
-
-            var response = await _http.GetAsync<Content<T>>(request, cancellation);
-
-            return response;
+            return await GetAsync<Content<T>>(request, cancellation);
         }
 
         public async Task<PagedList<Content<T>>> GetContents<T>(string modelKey, ContentsQuery query, CancellationToken cancellation = default) where T : class
         {
-            var request = new RestRequest("/api/contents/{model}")
-                                .AddUrlSegment("model", modelKey)
-                                .AddQuery(query);
+            var request = new RestRequest("/api/contents/{model}").AddUrlSegment("model", modelKey).AddQuery(query);
 
-            var response = await _http.GetAsync<PagedList<Content<T>>>(request, cancellation);
-
-            return response;
+            return await GetAsync<PagedList<Content<T>>>(request, cancellation);
         }
 
         public async Task<string> UpdateContent<T>(string modelKey, T content, CancellationToken cancellation = default) where T : Content<T>
         {
             throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region -- assets --
+
+        public async Task<Asset> GetAsset(string id, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/media-library/media/{id}").AddUrlSegment("id", id);
+
+            return await GetAsync<Asset>(request, cancellation);
+        }
+
+        public async Task<PagedList<Asset>> GetAssets(AssetsQuery query, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/media-library/media").AddQuery(query);
+
+            return await GetAsync<PagedList<Asset>>(request, cancellation);
+        }
+        
+        public async Task<List<Folder>> GetFolders(CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/media-library/folders");
+
+            return await GetAsync<List<Folder>>(request, cancellation);
+        }
+
+        public Task<List<Folder>> GetFolders(AssetsQuery query, CancellationToken cancellation = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        public IAtlasClient UseToken(string token)
+        {
+            base.SetToken(token);
+
+            return this;
         }
     }
 }

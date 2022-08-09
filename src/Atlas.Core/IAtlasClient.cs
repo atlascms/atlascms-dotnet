@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core
 {
-    public interface IAtlasClient
+    public interface IAtlasClient 
     {
         Task<Content<T>> GetContent<T>(string modelKey, string id, CancellationToken cancellation = default) where T : class;
         Task<PagedList<Content<T>>> GetContents<T>(string modelKey, ContentsQuery query, CancellationToken cancellation = default) where T : class;
@@ -19,5 +19,9 @@ namespace Atlas.Core
 
         Task<Asset> GetAsset(string id, CancellationToken cancellation = default);
         Task<PagedList<Asset>> GetAssets(AssetsQuery query, CancellationToken cancellation = default);
+
+        Task<List<Folder>> GetFolders(AssetsQuery query, CancellationToken cancellation = default);
+
+        IAtlasClient UseToken(string token);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Atlas.Core.Sereializer.NewtonsoftJson;
+﻿using Atlas.Core.Serializer.NewtonsoftJson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -16,6 +16,11 @@ namespace Atlas.Core.Configuration
         /// </summary>
         public string BaseUrl { get; set; }
 
+
+        /// <summary>
+        /// The Global Api Key used for authorization
+        /// </summary>
+        public string ApiKey { get; set; }  
 
         /// <summary>
         /// JSON.Net Serializer Settings

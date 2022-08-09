@@ -22,7 +22,7 @@ namespace Atlas.Core.Models
         /// <summary>
         /// The Folder Id where it stands
         /// </summary>
-        public string FolderId { get; private set; }
+        public string Folder { get; private set; }
 
         /// <summary>
         /// Type of Media, can be image, video or document

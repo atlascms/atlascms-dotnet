@@ -11,12 +11,12 @@ namespace Atlas.Core.Models
         /// <summary>
         /// Id of the Content
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; private set; }
 
         /// <summary>
         /// Culture of the Id
         /// </summary>
-        public string Locale { get; set; }
+        public string Locale { get; private set; }
         
     }
 }
