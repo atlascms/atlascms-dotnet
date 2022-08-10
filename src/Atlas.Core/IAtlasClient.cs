@@ -1,4 +1,5 @@
 ﻿using Atlas.Core.Models;
+using Atlas.Core.Models.Api;
 using Atlas.Core.Models.Collections;
 using Atlas.Core.Models.Queries;
 using System;
@@ -13,9 +14,9 @@ namespace Atlas.Core
     {
         Task<Content<T>> GetContent<T>(string modelKey, string id, CancellationToken cancellation = default) where T : class;
         Task<PagedList<Content<T>>> GetContents<T>(string modelKey, ContentsQuery query, CancellationToken cancellation = default) where T : class;
-        Task<string> CreateContent<T>(string modelKey, T content, CancellationToken cancellation = default) where T : Content<T>;
-        Task<string> UpdateContent<T>(string modelKey, T content, CancellationToken cancellation = default) where T : Content<T>;
-        Task<string> DeleteContent<T>(string modelKey, string id, CancellationToken cancellation = default) where T : Content<T>;
+        Task<string> CreateContent<T>(string modelKey, T content, string locale = "", CancellationToken cancellation = default) where T : class;
+        Task UpdateContent<T>(string modelKey, string id, T content, CancellationToken cancellation = default) where T : class;
+        Task DeleteContent(string modelKey, string id, CancellationToken cancellation = default);
 
         Task<Asset> GetAsset(string id, CancellationToken cancellation = default);
         Task<PagedList<Asset>> GetAssets(AssetsQuery query, CancellationToken cancellation = default);

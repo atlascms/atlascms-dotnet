@@ -1,6 +1,7 @@
 ﻿using Atlas.Core.Configuration;
 using Atlas.Core.Extensions;
 using Atlas.Core.Models;
+using Atlas.Core.Models.Api;
 using Atlas.Core.Models.Collections;
 using Atlas.Core.Models.Queries;
 using RestSharp;
@@ -25,12 +26,22 @@ namespace Atlas.Core
 
         #region -- contents --
 
-        public async Task<string> CreateContent<T>(string modelKey, T content, CancellationToken cancellation = default) where T : Content<T>
+        public async Task<string> CreateContent<T>(string modelKey, T content, string locale = "", CancellationToken cancellation = default) where T : class
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/contents/{model}")
+                                .AddUrlSegment("model", modelKey)
+                                .AddJsonBody(
+                                    new
+                                    {
+                                        Locale = locale,
+                                        Attributes = content
+                                    }
+                                );
+
+            return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        public async Task<string> DeleteContent<T>(string modelKey, string id, CancellationToken cancellation = default) where T : Content<T>
+        public async Task DeleteContent(string modelKey, string id, CancellationToken cancellation = default)
         {
             throw new NotImplementedException();
         }
@@ -39,7 +50,7 @@ namespace Atlas.Core
         {
             var request = new RestRequest("/api/contents/{model}/{id}").AddUrlSegment("model", modelKey).AddUrlSegment("id", id);
 
-            return await GetAsync<Content<T>>(request, cancellation);
+            return await GetAsync<Content<T>>(request, cancellation);            
         }
 
         public async Task<PagedList<Content<T>>> GetContents<T>(string modelKey, ContentsQuery query, CancellationToken cancellation = default) where T : class
@@ -49,9 +60,20 @@ namespace Atlas.Core
             return await GetAsync<PagedList<Content<T>>>(request, cancellation);
         }
 
-        public async Task<string> UpdateContent<T>(string modelKey, T content, CancellationToken cancellation = default) where T : Content<T>
+        public async Task UpdateContent<T>(string modelKey, string id, T content, CancellationToken cancellation = default) where T : class
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/contents/{model}/{id}")
+                                .AddUrlSegment("model", modelKey)
+                                .AddUrlSegment("id", id)
+                                .AddJsonBody(
+                                    new
+                                    {
+                                        Id = id,
+                                        Attributes = content
+                                    }
+                                );
+
+            await PutAsync(request, cancellation);
         }
 
         #endregion
@@ -71,7 +93,7 @@ namespace Atlas.Core
 
             return await GetAsync<PagedList<Asset>>(request, cancellation);
         }
-        
+
         public async Task<List<Folder>> GetFolders(CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/media-library/folders");

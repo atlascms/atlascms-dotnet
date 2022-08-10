@@ -16,12 +16,22 @@ namespace Atlas.Core.Models
         /// <summary>
         /// Content Locale
         /// </summary>
-        public string Locale { get; private set; }
+        public string Locale { get; set; }
 
         /// <summary>
         /// Created At (UTC Date)
         /// </summary>
         public DateTime CreatedAt { get; private set; }
+
+        /// <summary>
+        /// The Model Id to which the content belongs
+        /// </summary>
+        public string ModelId { get; private set; }
+
+        /// <summary>
+        /// The Model Key to which the content belongs
+        /// </summary>
+        public string ModelKey { get; private set; }
 
         /// <summary>
         /// Created By

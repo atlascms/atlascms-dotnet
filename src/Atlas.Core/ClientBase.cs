@@ -79,9 +79,25 @@ namespace Atlas.Core
             return await SendRequest<T>(request, Method.Put, cancellation);
         }
 
+        protected async Task PutAsync(RestRequest request, CancellationToken cancellation = default)
+        {
+            await SendRequest(request, Method.Put, cancellation);
+        }
+
         protected async Task<T> DeleteAsync<T>(RestRequest request, CancellationToken cancellation = default)
         {
             return await SendRequest<T>(request, Method.Delete, cancellation);
+        }
+
+        private async Task SendRequest(RestRequest request, Method method, CancellationToken cancellation = default)
+        {
+            EnrichRequestHeaders(request);
+
+            var response = await _http.ExecuteAsync(request, method, cancellation);
+
+            SetToken("");
+
+            ElaborateResponse(response);
         }
 
         private async Task<T> SendRequest<T>(RestRequest request, Method method, CancellationToken cancellation = default)
@@ -105,6 +121,43 @@ namespace Atlas.Core
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return response.Data;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                throw new NotFoundException();
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedException();
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new ForbiddenException();
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                throw new BadRequestException();
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+            {
+                throw new ValidationException();
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        private void ElaborateResponse(RestResponse response)
+        {
+            if (response == null)
+            {
+                throw new ArgumentNullException(nameof(response));
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return;
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

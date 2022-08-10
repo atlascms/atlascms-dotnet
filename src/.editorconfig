@@ -48,6 +48,9 @@ csharp_style_var_for_built_in_types = false:silent
 csharp_style_var_when_type_is_apparent = false:silent
 csharp_style_var_elsewhere = false:silent
 
+# CS8601: Possible null reference assignment.
+dotnet_diagnostic.CS8601.severity = none
+
 [*.{cs,vb}]
 #### Naming styles ####
 
