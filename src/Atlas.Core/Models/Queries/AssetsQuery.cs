@@ -8,5 +8,8 @@ namespace Atlas.Core.Models.Queries
 {
     public class AssetsQuery : ListQuery
     {
+        public string Folder { get; set; }
+
+        public string Filters { get; set; }
     }
 }

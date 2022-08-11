@@ -16,14 +16,13 @@ namespace Atlas.Core.Configuration
         /// </summary>
         public string BaseUrl { get; set; }
 
-
         /// <summary>
         /// The Global Api Key used for authorization
         /// </summary>
         public string ApiKey { get; set; }  
 
         /// <summary>
-        /// JSON.Net Serializer Settings
+        /// The Newtonsoft.Json.Net Serializer Settings
         /// </summary>
         public JsonSerializerSettings SerializerOptions { get; set; } = GetSerializerSettings();
 

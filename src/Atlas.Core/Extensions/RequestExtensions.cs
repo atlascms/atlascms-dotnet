@@ -84,6 +84,26 @@ namespace Atlas.Core.Extensions
                 return request;
             }
 
+            if (!string.IsNullOrEmpty(query.Filters))
+            {
+                var filters = query.Filters.Split('&');
+
+                foreach (var filter in filters)
+                {
+                    var parts = filter.Split('=');
+
+                    if (parts.Length == 2)
+                    {
+                        request.AddQueryParameter(parts[0], parts[1]);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(query.Folder))
+            {
+                request.AddQueryParameter("folder", query.Folder);
+            }
+
             return request.AddPaging(query).AddSorting(query);
         }
 

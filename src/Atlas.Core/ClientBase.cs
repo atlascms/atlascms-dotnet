@@ -1,6 +1,8 @@
 ﻿using Atlas.Core.Configuration;
 using Atlas.Core.Exceptions;
 using Atlas.Core.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -74,6 +76,11 @@ namespace Atlas.Core
             return await SendRequest<T>(request, Method.Post, cancellation);
         }
 
+        protected async Task PostAsync(RestRequest request, CancellationToken cancellation = default)
+        {
+            await SendRequest(request, Method.Post, cancellation);
+        }
+
         protected async Task<T> PutAsync<T>(RestRequest request, CancellationToken cancellation = default)
         {
             return await SendRequest<T>(request, Method.Put, cancellation);
@@ -87,6 +94,11 @@ namespace Atlas.Core
         protected async Task<T> DeleteAsync<T>(RestRequest request, CancellationToken cancellation = default)
         {
             return await SendRequest<T>(request, Method.Delete, cancellation);
+        }
+
+        protected async Task DeleteAsync(RestRequest request, CancellationToken cancellation = default)
+        {
+            await SendRequest(request, Method.Delete, cancellation);
         }
 
         private async Task SendRequest(RestRequest request, Method method, CancellationToken cancellation = default)
@@ -118,34 +130,12 @@ namespace Atlas.Core
                 throw new ArgumentNullException(nameof(response));
             }
 
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                return response.Data;
+                ComposeAndRaiseException(response);
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                throw new NotFoundException();
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedException();
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
-            {
-                throw new ForbiddenException();
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                throw new BadRequestException();
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
-            {
-                throw new ValidationException();
-            }
-            else
-            {
-                throw new Exception();
-            }
+
+            return response.Data;
         }
 
         private void ElaborateResponse(RestResponse response)
@@ -155,34 +145,41 @@ namespace Atlas.Core
                 throw new ArgumentNullException(nameof(response));
             }
 
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                return;
+                ComposeAndRaiseException(response);
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        }
+
+        private void ComposeAndRaiseException(RestResponse response)
+        {
+            var atlasException = string.IsNullOrEmpty(response.Content) ? JObject.Parse("{}") : JObject.Parse(response.Content);
+            var message = atlasException?.SelectToken("message")?.ToString();
+
+
+            if (message == null)
             {
-                throw new NotFoundException();
+                message = response.StatusCode switch
+                {
+                    System.Net.HttpStatusCode.NotFound => "Not found",
+                    System.Net.HttpStatusCode.Unauthorized => "Unauthorized",
+                    System.Net.HttpStatusCode.Forbidden => "Not enough privileges to access the requested resource",
+                    System.Net.HttpStatusCode.UnprocessableEntity => "Validation errors",
+                    System.Net.HttpStatusCode.BadRequest => "Bad request",
+                    System.Net.HttpStatusCode.TooManyRequests => "Too many requests",
+                    System.Net.HttpStatusCode.InternalServerError => "Internal server error",
+                    System.Net.HttpStatusCode.BadGateway => "Bad gateway",
+                    System.Net.HttpStatusCode.ServiceUnavailable => "Service unavailable",
+                    System.Net.HttpStatusCode.GatewayTimeout => "Gateway timeout",
+                    _ => "Generic Error"
+                };
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedException();
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
-            {
-                throw new ForbiddenException();
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                throw new BadRequestException();
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
-            {
-                throw new ValidationException();
-            }
-            else
-            {
-                throw new Exception();
-            }
+
+            var exception = new AtlasException((int)response.StatusCode, message) {
+                Errors = atlasException?.SelectToken("errors")
+            };
+
+            throw exception;
         }
 
         protected void SetToken(string token)
