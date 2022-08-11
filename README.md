@@ -1,3 +1,5 @@
+This is the Atlas Headless CMS .NET Client SDK
+
 ## Getting started
 
 We recommend you use the NuGet Package Manager to add the library to your .NET Application using one of the following options:
