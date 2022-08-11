@@ -28,70 +28,28 @@ var client = new AtlasClient(options);
 Now you can use all the features exposed by the client. For Example if you want to read a content you can
 
 ```csharp
-var myContent = await client.GetContent<object>("<model-key>", "<content-id>");
+var myContent = await client.GetContent<object>("<model-api-key>", "<content-id>");
 ```
 The above request will return a object of type `Content<object>` where its definition is the following:
 
 ```csharp
 public class Content<T> where T : class
  {
-     /// <summary>
-     /// Content Id
-     /// </summary>
      public string Id { get; set; }
-
-     /// <summary>
-     /// Content Locale
-     /// </summary>
      public string Locale { get; set; }
-
-     /// <summary>
-     /// Created At (UTC Date)
-     /// </summary>
      public DateTime CreatedAt { get; private set; }
-
-     /// <summary>
-     /// The Model Id to which the content belongs
-     /// </summary>
      public string ModelId { get; private set; }
-
-     /// <summary>
-     /// The Model Key to which the content belongs
-     /// </summary>
      public string ModelKey { get; private set; }
-
-     /// <summary>
-     /// Created By
-     /// </summary>
      public string CreatedBy { get; private set; }
-
-     /// <summary>
-     /// Modified At (UTC Date)
-     /// </summary>
      public DateTime ModifiedAt { get; private set; }
-
-     /// <summary>
-     /// Modified By
-     /// </summary>
      public string ModifiedBy { get; private set; }
-
-     /// <summary>
-     /// Content Hash
-     /// </summary>
      public string Hash { get; private set; }
-
-     /// <summary>
-     /// Content Data
-     /// </summary>
      public T Attributes { get; set; }
-
-     /// <summary>
-     /// Available Translations
-     /// </summary>
      public List<ContentLocale> Locales { get; private set; } = new List<ContentLocale>();
  }
 ```
 **Strongly Typed Attributes**
+
 Each Content in Atlas has Attributes that are the dynamic values based on the Model.
 If you don't want to work with *objects* you can create your own class that match the Model Field keys in Atlas and use it.
 For example, if you created in Atlas a **Model** called *Book* with the following keys:
@@ -112,6 +70,6 @@ public class Book
 	public string[] Tags { get; set; }
 }
 
-var myBook = await client.GetContent<Book>("<model-key>", "<content-id>");
+var myBook = await client.GetContent<Book>("<model-api-key>", "<content-id>");
 ```
 Now in the Attribute property of the `Content<Book>` you can use your strongly typed class.
