@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core.Exceptions
 {
+    /// <summary>
+    /// Potential Exception raised by the client when the Atlas APIs.
+    /// </summary>
     public class AtlasException : Exception
     {
         /// <summary>
