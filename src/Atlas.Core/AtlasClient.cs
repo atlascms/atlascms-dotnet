@@ -24,7 +24,14 @@ namespace Atlas.Core
         public AtlasClient(AtlasOptions options)
         {
             _options = options;
-            _http = new RestClient(options.BaseUrl);
+
+            var restClientOptions = new RestClientOptions
+            {
+                BaseUrl = new Uri(options.BaseUrl),
+                UserAgent = "Atlas .NET SDK"              
+            };
+
+            _http = new RestClient(restClientOptions);            
             _http.UseNewtonsoftJson(options.SerializerOptions);
         }
 

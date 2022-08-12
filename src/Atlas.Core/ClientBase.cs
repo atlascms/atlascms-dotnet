@@ -7,6 +7,7 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,47 +62,114 @@ namespace Atlas.Core
             }
         }
 
+        private static string AppId => "atlas-dotnet";
+
+        private static string Version => typeof(ClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+        /// <summary>
+        /// Add the Atlas SDK Client Heders
+        /// </summary>
+        /// <param name="request">The <see cref="RestRequest"/> to send</param>
         protected void EnrichRequestHeaders(RestRequest request)
         { 
             request.AddBearerToken(string.IsNullOrEmpty(_token) ? _options.ApiKey : _token);
+            request.AddHeader("Content-Type", $"application/json");
+            request.AddHeader("X-Atlas-SDK", $"{AppId}/{Version}; OS {Os};");
         }
 
+        /// <summary>
+        /// Execute a Get Request Async
+        /// </summary>
+        /// <typeparam name="T">The type of response to deserialize.</typeparam>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="cancellation"></param>
+        /// <returns>Returns the object <see cref="T"/></returns>
+        /// <exception cref="AtlasException">The API exception</exception>
         protected async Task<T> GetAsync<T>(RestRequest request, CancellationToken cancellation = default)
         {
-            return await SendRequest<T>(request, Method.Get, cancellation);
+            return await SendRequestAsync<T>(request, Method.Get, cancellation);
         }
 
+        /// <summary>
+        /// Execute a Post Request Async
+        /// </summary>
+        /// <typeparam name="T">The type of response to deserialize.</typeparam>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="cancellation"></param>
+        /// <returns>Returns the object <see cref="T"/></returns>
+        /// <exception cref="AtlasException">The API exception</exception>
         protected async Task<T> PostAsync<T>(RestRequest request, CancellationToken cancellation = default)
         {
-            return await SendRequest<T>(request, Method.Post, cancellation);
+            return await SendRequestAsync<T>(request, Method.Post, cancellation);
         }
 
+        /// <summary>
+        /// Execute a Get Request Async
+        /// </summary>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="cancellation"></param>
+        /// <exception cref="AtlasException">The API exception</exception>
         protected async Task PostAsync(RestRequest request, CancellationToken cancellation = default)
         {
-            await SendRequest(request, Method.Post, cancellation);
+            await SendRequestAsync(request, Method.Post, cancellation);
         }
 
+        /// <summary>
+        /// Execute a Put Request Async
+        /// </summary>
+        /// <typeparam name="T">The type of response to deserialize.</typeparam>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="cancellation"></param>
+        /// <returns>Returns the object <see cref="T"/></returns>
+        /// <exception cref="AtlasException">The API exception</exception>
         protected async Task<T> PutAsync<T>(RestRequest request, CancellationToken cancellation = default)
         {
-            return await SendRequest<T>(request, Method.Put, cancellation);
+            return await SendRequestAsync<T>(request, Method.Put, cancellation);
         }
 
+        /// <summary>
+        /// Execute a Put Request Async
+        /// </summary>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="cancellation"></param>
+        /// <exception cref="AtlasException">The API exception</exception>
         protected async Task PutAsync(RestRequest request, CancellationToken cancellation = default)
         {
-            await SendRequest(request, Method.Put, cancellation);
+            await SendRequestAsync(request, Method.Put, cancellation);
         }
 
+        /// <summary>
+        /// Execute a Delete Request Async
+        /// </summary>
+        /// <typeparam name="T">The type of response to deserialize.</typeparam>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="cancellation"></param>
+        /// <returns>Returns the object <see cref="T"/></returns>
+        /// <exception cref="AtlasException">The API exception</exception>
         protected async Task<T> DeleteAsync<T>(RestRequest request, CancellationToken cancellation = default)
         {
-            return await SendRequest<T>(request, Method.Delete, cancellation);
+            return await SendRequestAsync<T>(request, Method.Delete, cancellation);
         }
 
+        /// <summary>
+        /// Execute a Delete Request Async
+        /// </summary>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="cancellation"></param>
+        /// <exception cref="AtlasException">The API exception</exception>
         protected async Task DeleteAsync(RestRequest request, CancellationToken cancellation = default)
         {
-            await SendRequest(request, Method.Delete, cancellation);
+            await SendRequestAsync(request, Method.Delete, cancellation);
         }
 
-        private async Task SendRequest(RestRequest request, Method method, CancellationToken cancellation = default)
+        /// <summary>
+        /// Execute a Request Async
+        /// </summary>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="method">The <see cref="Method"/> to use.</param>
+        /// <param name="cancellation"></param>
+        /// <exception cref="AtlasException">The API exception</exception>
+        private async Task SendRequestAsync(RestRequest request, Method method, CancellationToken cancellation = default)
         {
             EnrichRequestHeaders(request);
 
@@ -112,7 +180,16 @@ namespace Atlas.Core
             ElaborateResponse(response);
         }
 
-        private async Task<T> SendRequest<T>(RestRequest request, Method method, CancellationToken cancellation = default)
+        /// <summary>
+        /// Execute a Request Async
+        /// </summary>
+        /// <typeparam name="T">The type of response to deserialize.</typeparam>
+        /// <param name="request">The <see cref="RestRequest"/> to send.</param>
+        /// <param name="method">The <see cref="Method"/> to use.</param>
+        /// <param name="cancellation"></param>
+        /// <returns>Returns the object <see cref="T"/></returns>
+        /// <exception cref="AtlasException">The API exception</exception>
+        private async Task<T> SendRequestAsync<T>(RestRequest request, Method method, CancellationToken cancellation = default)
         {
             EnrichRequestHeaders(request);
 
@@ -123,6 +200,13 @@ namespace Atlas.Core
             return ElaborateResponse(response);
         }
 
+        /// <summary>
+        /// Elaborate the Response
+        /// </summary>
+        /// <typeparam name="T">The type of response to deserialize.</typeparam>
+        /// <param name="response">The <see cref="RestResponse{T}"/>.</param>
+        /// <returns>Returns the object <see cref="T"/></returns>
+        /// <exception cref="AtlasException">The API exception</exception>
         private T ElaborateResponse<T>(RestResponse<T> response)
         {
             if (response == null)
@@ -138,6 +222,11 @@ namespace Atlas.Core
             return response.Data;
         }
 
+        /// <summary>
+        /// Elaborate the Response
+        /// </summary>
+        /// <param name="response">The <see cref="RestResponse"/>.</param>
+        /// <exception cref="AtlasException">The API exception</exception>
         private void ElaborateResponse(RestResponse response)
         {
             if (response == null)
@@ -151,11 +240,13 @@ namespace Atlas.Core
             }
         }
 
+        /// <summary>
+        /// Compose and Raise the Atlas API Exception
+        /// </summary>
         private void ComposeAndRaiseException(RestResponse response)
         {
             var atlasException = string.IsNullOrEmpty(response.Content) ? JObject.Parse("{}") : JObject.Parse(response.Content);
             var message = atlasException?.SelectToken("message")?.ToString();
-
 
             if (message == null)
             {
@@ -182,6 +273,10 @@ namespace Atlas.Core
             throw exception;
         }
 
+        /// <summary>
+        /// Set the Token to use as Authorization for the Request
+        /// </summary>
+        /// <param name="token">The token string</param>
         protected void SetToken(string token)
         { 
             _token = token;
