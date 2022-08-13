@@ -1,8 +1,7 @@
 name: "NuGet Deploy"
 
 on: 
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 env:
   PROJECT_PATH: "src/Atlas.Core/Atlas.Core.csproj"
