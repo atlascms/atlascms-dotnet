@@ -32,4 +32,4 @@ jobs:
         run: dotnet pack ${{env.PROJECT_PATH}} --no-restore --no-build --configuration Release --include-symbols --output ${{env.PACKAGE_OUTPUT_PATH}}
         
       - name: "Publish to NuGet"
-        run: donet nuget push ${{env.PACKAGE_OUTPUT_PATH}}\*.nupkg -k ${{secrets.NUGET_API_KEY}} -s ${{env.NUGET_SOURCE_URL}}
+        run: dotnet nuget push ${{env.PACKAGE_OUTPUT_PATH}}\*.nupkg -k ${{secrets.NUGET_API_KEY}} -s ${{env.NUGET_SOURCE_URL}}
