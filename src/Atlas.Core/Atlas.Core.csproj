@@ -17,7 +17,7 @@
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <Company>Atlas CMS</Company>
     <Product>Atlas CMS .NET Client SDK</Product>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <Authors>Atlas CMS</Authors>
   </PropertyGroup>
 

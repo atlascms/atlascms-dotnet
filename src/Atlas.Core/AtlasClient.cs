@@ -453,5 +453,15 @@ namespace Atlas.Core
 
             return this;
         }
+
+        public Task<User> GetUser(string id, CancellationToken cancellation = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User<T>> GetUser<T>(string id, CancellationToken cancellation = default) where T : class
+        {
+            throw new NotImplementedException();
+        }
     }
 }
