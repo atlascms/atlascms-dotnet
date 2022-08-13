@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Core.Tests", "Atlas.Core.Tests\Atlas.Core.Tests.csproj", "{69A8C631-C13D-4E9C-8A08-69063CD44156}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{1A6B76B0-E727-4982-8E12-4FF57F6D3083}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A6B76B0-E727-4982-8E12-4FF57F6D3083}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A6B76B0-E727-4982-8E12-4FF57F6D3083}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69A8C631-C13D-4E9C-8A08-69063CD44156}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69A8C631-C13D-4E9C-8A08-69063CD44156}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69A8C631-C13D-4E9C-8A08-69063CD44156}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69A8C631-C13D-4E9C-8A08-69063CD44156}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
