@@ -17,22 +17,19 @@ namespace Atlas.Core
 {
     public class AtlasClient : ClientBase, IAtlasClient
     {
+        public IAtlasUserClient Users { get; private set; }
+
+        public IAtlasManagementClient Management { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AtlasClient"/> class.
         /// </summary>
         /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
-        public AtlasClient(AtlasOptions options)
+        public AtlasClient(AtlasOptions options, IAtlasUserClient userClient)
         {
-            _options = options;
+            InitClient(options);
 
-            var restClientOptions = new RestClientOptions
-            {
-                BaseUrl = new Uri(options.BaseUrl),
-                UserAgent = "Atlas .NET SDK"              
-            };
-
-            _http = new RestClient(restClientOptions);            
-            _http.UseNewtonsoftJson(options.SerializerOptions);
+            Users = userClient;
         }
 
         #region -- contents --
@@ -72,7 +69,7 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<string> CreateContent(string modelKey, Dictionary<string, object> content, string locale = "", CancellationToken cancellation = default)
         {
-            return await CreateContent<Dictionary<string, object>>(modelKey, content, locale, cancellation);    
+            return await CreateContent<Dictionary<string, object>>(modelKey, content, locale, cancellation);
         }
 
         /// <summary>
@@ -96,7 +93,7 @@ namespace Atlas.Core
                                );
 
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
-        }        
+        }
 
         /// <summary>
         /// Delete the content with the ID provided
@@ -171,7 +168,7 @@ namespace Atlas.Core
         {
             var request = new RestRequest("/api/contents/{model}/{id}").AddUrlSegment("model", modelKey).AddUrlSegment("id", id);
 
-            return await GetAsync<Content<T>>(request, cancellation);            
+            return await GetAsync<Content<T>>(request, cancellation);
         }
 
         /// <summary>
@@ -299,7 +296,7 @@ namespace Atlas.Core
                                 .AddHeader("Content-Type", "multipart/form-data")
                                 .AddParameter("folder", folder, ParameterType.RequestBody)
                                 .AddFile("file", bytes, fileName);
-           
+
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
@@ -454,14 +451,6 @@ namespace Atlas.Core
             return this;
         }
 
-        public Task<User> GetUser(string id, CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<User<T>> GetUser<T>(string id, CancellationToken cancellation = default) where T : class
-        {
-            throw new NotImplementedException();
-        }
     }
 }

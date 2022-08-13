@@ -24,13 +24,11 @@ namespace Atlas.Core.Models
         public string CreatedBy { get; private set; }
         public DateTime ModifiedAt { get; private set; }
         public string ModifiedBy { get; private set; }
-
-        public Dictionary<string, object> Attributes { get; set; }
     }
 
     public class User<T> : User where T : class
     {
-        public new T Attributes { get; set; }
+        public T Attributes { get; set; }
     }
 
     public class RegisterUser : UserBase

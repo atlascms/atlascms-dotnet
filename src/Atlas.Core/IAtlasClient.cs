@@ -251,8 +251,7 @@ namespace Atlas.Core
         /// <returns>The instance of the client.</returns>
         IAtlasClient UseToken(string token);
 
-
-        Task<User> GetUser(string id, CancellationToken cancellation = default);
-        Task<User<T>> GetUser<T>(string id, CancellationToken cancellation = default) where T : class;
+        IAtlasUserClient Users { get; }
+        IAtlasManagementClient Management { get; }
     }
 }

@@ -2,6 +2,7 @@
 using Atlas.Core.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,14 @@ namespace Atlas.AspNetCore
         public static IServiceCollection AddAtlasSDK(this IServiceCollection services, Action<AtlasOptions> options)
         {
             services.Configure(options);
+            services.AddTransient<IAtlasUserClient>((sp) =>
+            {
+                return new AtlasUserClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value);
+            });
             services.AddTransient<IAtlasClient>((sp) =>
             {
-                return new AtlasClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value);
+                return new AtlasClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value,
+                                       sp.GetRequiredService<IAtlasUserClient>());
             });
 
             return services;

@@ -4,6 +4,7 @@ using Atlas.Core.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,19 @@ namespace Atlas.Core
         private static string AppId => "atlas-dotnet";
 
         private static string Version => typeof(ClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+        protected void InitClient(AtlasOptions options)
+        {
+            _options = options; 
+
+            var restClientOptions = new RestClientOptions
+            {
+                BaseUrl = new Uri(options.BaseUrl),
+                UserAgent = "Atlas .NET SDK"
+            };
+
+            _http = new RestClient(restClientOptions).UseNewtonsoftJson(options.SerializerOptions);
+        }
 
         /// <summary>
         /// Add the Atlas SDK Client Heders
