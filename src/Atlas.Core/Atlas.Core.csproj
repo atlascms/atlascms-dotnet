@@ -12,9 +12,13 @@
     <RepositoryUrl>https://github.com/atlascms/atlas-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Headless;CMS;Atlas CMS</PackageTags>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <PackageId>atlascms.dotnet</PackageId>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>AtlasCMS</PackageId>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+    <Company>Atlas CMS</Company>
+    <Product>Atlas CMS .NET Client SDK</Product>
+    <Version>0.0.1</Version>
+    <Authors>Atlas CMS</Authors>
   </PropertyGroup>
 
   <ItemGroup>
