@@ -2,6 +2,14 @@ name: "NuGet Deploy"
 
 on: 
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to use'
+        required: true
+        default: 'main'
+        type: choice
+        options:
+        - main
 
 env:
   PROJECT_PATH: "src/Atlas.Core/Atlas.Core.csproj"
