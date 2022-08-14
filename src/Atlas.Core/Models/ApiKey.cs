@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core.Models
 {
-    public class AccountRole
+    public class ApiKey
     {
-        public string Id { get; private set; }
+        public string Id { get; set; }
         public string Name { get; set; }
-        public bool System { get; private set; }
-
+        public bool IsActive { get; set; }
+        public string Key { get; set; }
+        public DateTime? ValidFrom { get; set; }
+        public DateTime? ValidTo { get; set; }
         public List<string> Permissions { get; set; } = new List<string>();
     }
 }

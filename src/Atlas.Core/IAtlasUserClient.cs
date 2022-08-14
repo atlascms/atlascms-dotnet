@@ -67,7 +67,7 @@ namespace Atlas.Core
         Task<PagedList<User<T>>> GetUsers<T>(UserQuery query, CancellationToken cancellation = default) where T : class;
 
         /// <summary>
-        /// Authenticate a user
+        /// Authenticate the user
         /// </summary>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>

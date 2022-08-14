@@ -2,7 +2,7 @@
 using Atlas.Core.Exceptions;
 using Atlas.Core.Extensions;
 using Atlas.Core.Models;
-using Atlas.Core.Models.Api;
+using Atlas.Core.Models.Shared;
 using Atlas.Core.Models.Collections;
 using Atlas.Core.Models.Queries;
 using RestSharp;
@@ -49,7 +49,7 @@ namespace Atlas.Core
         /// <summary>
         /// Create a new role
         /// </summary>
-        /// <param name="user">The object to serialize as a <see cref="Role"/>.</param>
+        /// <param name="role">The object to serialize as a <see cref="Role"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the role created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
@@ -154,7 +154,7 @@ namespace Atlas.Core
         }
 
         /// <summary>
-        /// Authenticate a user
+        /// Authenticate the user
         /// </summary>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
@@ -219,7 +219,7 @@ namespace Atlas.Core
         /// <summary>
         /// Update an existing role
         /// </summary>
-        /// <param name="user">The object to serialize as a <see cref="Role"/>.</param>
+        /// <param name="role">The object to serialize as a <see cref="Role"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task UpdateRole(Role role, CancellationToken cancellation = default)

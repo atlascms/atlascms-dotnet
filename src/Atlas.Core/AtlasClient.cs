@@ -1,7 +1,7 @@
 ﻿using Atlas.Core.Configuration;
 using Atlas.Core.Extensions;
 using Atlas.Core.Models;
-using Atlas.Core.Models.Api;
+using Atlas.Core.Models.Shared;
 using Atlas.Core.Models.Collections;
 using Atlas.Core.Models.Queries;
 using RestSharp;

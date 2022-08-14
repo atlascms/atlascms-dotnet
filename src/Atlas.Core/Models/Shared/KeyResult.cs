@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atlas.Core.Models.Api
+namespace Atlas.Core.Models.Shared
 {
     public class KeyResult<T>
     {
