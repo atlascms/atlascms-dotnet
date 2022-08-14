@@ -26,10 +26,15 @@ namespace Atlas.AspNetCore
             {
                 return new AtlasUserClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value);
             });
+            services.AddTransient<IAtlasManagementClient>((sp) =>
+            {
+                return new AtlasManagementClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value);
+            });
             services.AddTransient<IAtlasClient>((sp) =>
             {
                 return new AtlasClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value,
-                                       sp.GetRequiredService<IAtlasUserClient>());
+                                       sp.GetRequiredService<IAtlasUserClient>(),
+                                       sp.GetRequiredService<IAtlasManagementClient>());
             });
 
             return services;

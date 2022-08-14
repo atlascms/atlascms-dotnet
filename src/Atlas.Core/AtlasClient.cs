@@ -17,19 +17,26 @@ namespace Atlas.Core
 {
     public class AtlasClient : ClientBase, IAtlasClient
     {
+        /// <summary>
+        /// The Users & Roles API Client
+        /// </summary>
         public IAtlasUserClient Users { get; private set; }
 
+        /// <summary>
+        /// The Admin & Management API Client
+        /// </summary>
         public IAtlasManagementClient Management { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AtlasClient"/> class.
         /// </summary>
         /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
-        public AtlasClient(AtlasOptions options, IAtlasUserClient userClient)
+        public AtlasClient(AtlasOptions options, IAtlasUserClient userClient, IAtlasManagementClient managementClient)
         {
             InitClient(options);
 
             Users = userClient;
+            Management = managementClient;  
         }
 
         #region -- contents --

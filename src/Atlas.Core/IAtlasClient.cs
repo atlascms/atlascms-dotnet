@@ -252,7 +252,14 @@ namespace Atlas.Core
         /// <returns>The instance of the client.</returns>
         IAtlasClient UseToken(string token);
 
+        /// <summary>
+        /// The Users & Roles API Client
+        /// </summary>
         IAtlasUserClient Users { get; }
+
+        /// <summary>
+        /// The Admin & Management API Client
+        /// </summary>
         IAtlasManagementClient Management { get; }
     }
 }
