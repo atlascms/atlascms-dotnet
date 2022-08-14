@@ -3,6 +3,7 @@ using Atlas.Core.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,17 +23,35 @@ namespace Atlas.AspNetCore
         public static IServiceCollection AddAtlasSDK(this IServiceCollection services, Action<AtlasOptions> options)
         {
             services.Configure(options);
+
+            services.AddTransient<RestClient>((sp) => {
+
+                var options = sp.GetRequiredService<IOptions<AtlasOptions>>().Value;
+
+                var restClientOptions = new RestClientOptions
+                {
+                    BaseUrl = new Uri(options.BaseUrl)
+                };
+
+                return new RestClient(restClientOptions).UseNewtonsoftJson(options.SerializerOptions);
+            });
+
             services.AddTransient<IAtlasUserClient>((sp) =>
             {
-                return new AtlasUserClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value);
+                return new AtlasUserClient(sp.GetRequiredService<RestClient>(),
+                                           sp.GetRequiredService<IOptions<AtlasOptions>>().Value);
             });
+
             services.AddTransient<IAtlasManagementClient>((sp) =>
             {
-                return new AtlasManagementClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value);
+                return new AtlasManagementClient(sp.GetRequiredService<RestClient>(),
+                                                 sp.GetRequiredService<IOptions<AtlasOptions>>().Value);
             });
+
             services.AddTransient<IAtlasClient>((sp) =>
             {
-                return new AtlasClient(sp.GetRequiredService<IOptions<AtlasOptions>>().Value,
+                return new AtlasClient(sp.GetRequiredService<RestClient>(),
+                                       sp.GetRequiredService<IOptions<AtlasOptions>>().Value,
                                        sp.GetRequiredService<IAtlasUserClient>(),
                                        sp.GetRequiredService<IAtlasManagementClient>());
             });

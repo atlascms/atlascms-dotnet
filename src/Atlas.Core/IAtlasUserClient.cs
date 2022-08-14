@@ -118,7 +118,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="List{Role}"/>.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<List<Role>> GetRoles(CancellationToken cancellation = default);
+        Task<List<Role>> GetAllRoles(CancellationToken cancellation = default);
 
         /// <summary>
         /// Create a new role

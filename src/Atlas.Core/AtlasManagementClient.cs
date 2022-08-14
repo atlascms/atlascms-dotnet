@@ -18,9 +18,9 @@ namespace Atlas.Core
         /// Initializes a new instance of the <see cref="AtlasUserClient"/> class.
         /// </summary>
         /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
-        public AtlasManagementClient(AtlasOptions options)
+        public AtlasManagementClient(RestClient http, AtlasOptions options)
         {
-            InitClient(options);
+            InitClient(http, options);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="List{Role}"/>.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<AccountRole>> GetAccountRoles(CancellationToken cancellation = default)
+        public async Task<List<AccountRole>> GetAllAccountRoles(CancellationToken cancellation = default)
         {
             throw new NotImplementedException();
         }
@@ -179,7 +179,7 @@ namespace Atlas.Core
         /// </summary>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The list of <see cref="ApiKey"/> objects.</returns>
-        public async Task<List<ApiKey>> GetApiKeys(CancellationToken cancellation = default)
+        public async Task<List<ApiKey>> GetAllApiKeys(CancellationToken cancellation = default)
         {
             throw new NotImplementedException();
         }
@@ -215,7 +215,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The list of <see cref="Webhook"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Webhook>> GetWebooks(CancellationToken cancellation = default)
+        public async Task<List<Webhook>> GetAllWebooks(CancellationToken cancellation = default)
         {
             throw new NotImplementedException();
         }
@@ -301,29 +301,6 @@ namespace Atlas.Core
         }
 
         /// <summary>
-        /// Get the model with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the model to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Model"/> object.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Model> GetModel(string id, CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Get the list of models
-        /// </summary>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The list of <see cref="Model"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Model>> GetModels(CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Update an existing webhook
         /// </summary>
         /// <param name="model">The object to serialize as a <see cref="Model"/>.</param>
@@ -353,29 +330,6 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task DeleteComponent(string id, CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Get the component with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the component to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Component"/> object.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Model> GetComponent(string id, CancellationToken cancellation = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Get the list of components
-        /// </summary>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The list of <see cref="Component"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Model>> GetComponents(CancellationToken cancellation = default)
         {
             throw new NotImplementedException();
         }

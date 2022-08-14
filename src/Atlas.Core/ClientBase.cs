@@ -17,10 +17,8 @@ namespace Atlas.Core
 {
     public abstract class ClientBase
     {
-        protected RestClient _http;
+        private RestClient _http;
         protected AtlasOptions _options;
-
-        private string _token = "";
         
         private string Os => IsWindows ? "Windows" : IsMacOS ? "macOS" : "Linux";
 
@@ -67,17 +65,12 @@ namespace Atlas.Core
 
         private static string Version => typeof(ClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
-        protected void InitClient(AtlasOptions options)
+        private string _token = "";
+
+        protected void InitClient(RestClient http, AtlasOptions options)
         {
-            _options = options; 
-
-            var restClientOptions = new RestClientOptions
-            {
-                BaseUrl = new Uri(options.BaseUrl),
-                UserAgent = "Atlas .NET SDK"
-            };
-
-            _http = new RestClient(restClientOptions).UseNewtonsoftJson(options.SerializerOptions);
+            _options = options;
+            _http = http;           
         }
 
         /// <summary>
@@ -89,6 +82,7 @@ namespace Atlas.Core
             request.AddBearerToken(string.IsNullOrEmpty(_token) ? _options.ApiKey : _token);
             request.AddHeader("Content-Type", $"application/json");
             request.AddHeader("X-Atlas-SDK", $"{AppId}/{Version}; OS {Os};");
+            request.AddHeader("User-Agent", "Atlas CMS .NET Client SDK");
         }
 
         /// <summary>
@@ -295,6 +289,7 @@ namespace Atlas.Core
         { 
             _token = token;
         }
+
     }
 }
 

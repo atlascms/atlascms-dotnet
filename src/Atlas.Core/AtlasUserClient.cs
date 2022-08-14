@@ -21,9 +21,9 @@ namespace Atlas.Core
         /// Initializes a new instance of the <see cref="AtlasUserClient"/> class.
         /// </summary>
         /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
-        public AtlasUserClient(AtlasOptions options)
+        public AtlasUserClient(RestClient http, AtlasOptions options)
         {
-            InitClient(options);
+            InitClient(http, options);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="List{Role}"/>.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Role>> GetRoles(CancellationToken cancellation = default)
+        public async Task<List<Role>> GetAllRoles(CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/roles");
 

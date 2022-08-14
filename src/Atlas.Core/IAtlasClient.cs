@@ -223,7 +223,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="List{Folder}"/>.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<List<Folder>> GetFolders(CancellationToken cancellation = default);
+        Task<List<Folder>> GetAllFolders(CancellationToken cancellation = default);
 
         /// <summary>
         /// Move a folder under another path
@@ -261,5 +261,41 @@ namespace Atlas.Core
         /// The Admin & Management API Client
         /// </summary>
         IAtlasManagementClient Management { get; }
+
+
+        /// <summary>
+        /// Get the model with the ID provided
+        /// </summary>
+        /// <param name="id">The ID of the model to fetch.</param>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Model"/> object.</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task<Model> GetModel(string id, CancellationToken cancellation = default);
+
+        /// <summary>
+        /// Get the list of models
+        /// </summary>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The list of <see cref="Model"/> objects.</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task<List<Model>> GetAllModels(CancellationToken cancellation = default);
+
+
+        /// <summary>
+        /// Get the component with the ID provided
+        /// </summary>
+        /// <param name="id">The ID of the component to fetch.</param>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="Component"/> object.</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task<Model> GetComponent(string id, CancellationToken cancellation = default);
+
+        /// <summary>
+        /// Get the list of components
+        /// </summary>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The list of <see cref="Component"/> objects.</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task<List<Model>> GetAllComponents(CancellationToken cancellation = default);
     }
 }
