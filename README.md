@@ -1,4 +1,35 @@
-This is the Atlas Headless CMS .NET Client SDK
+
+This is the Atlas Headless CMS .NET Client SDK (Preview)
+
+**!!! NOTE !!!**
+
+**AtlasCMS is planning to be RTM for all by Jan '23.
+We are currently on RC phase with just selected customers and professional working with it.
+We decided to don't have a WebSite or Documentation online as far as we go RTM.**
+
+**If you want to try Atlas CMS and be part of the selected community totally free, before the RTM, write to support@atlascms.io**
+
+## What is Atlas CMS
+**Atlas** is a Cloud based SaaS Headless CMS. It has been created by developers for Developers, Agencies and Content Creators  for the creation of their digital projects.
+
+It wants to be simple, feature rich and with lighting speed performances and it contains the following features:
+
+- RESTful APIs  
+- GraphQL Content Delivery
+- Powerful filters to search any part of the contents
+- Visual Model Builder with automatic API creation
+- Components
+- 30+ ready to go field types
+- Media Library and Media Analyzer
+- Image Editor
+- Image Server (resize, crop, format change, WebP)
+- Admin Users and Permissions
+- Project Users and Permission
+- Multilanguage
+- Webhooks
+- ....many more
+
+
 
 ## Getting started
 
@@ -7,13 +38,13 @@ We recommend you use the NuGet Package Manager to add the library to your .NET A
 - In Visual Studio, open Package Manager Console window and run the following command:
 
   ```powershell
-  PM> Install-Package [STILL TO DEFINE]
+  PM> Install-Package AtlasCMS
   ```
 
 - In a command-line, run the following .NET CLI command:
 
   ```console
-  > dotnet add package [STILL TO DEFINE]
+  > dotnet add package AtlasCMS
 ## Use the Client
 
 ```csharp
