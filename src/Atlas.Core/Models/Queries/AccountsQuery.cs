@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core.Models.Queries
 {
-    public class AccountQuery : ListQuery
+    public class AccountsQuery : ListQuery
     {
         public string Username { get; set; }
         public string Search { get; set; }

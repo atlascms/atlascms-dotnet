@@ -129,11 +129,11 @@ namespace Atlas.Core
         /// <summary>
         /// Get the paginated list of users 
         /// </summary>
-        /// <param name="query">The optional <see cref="UserQuery"/> to filter the users.</param>
+        /// <param name="query">The optional <see cref="UsersQuery"/> to filter the users.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="PagedList{User{Dictionary{TKey,TValue}}}"/> with paging information and the list of <see cref="User{Dictionary{TKey,TValue}}"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<User<Dictionary<string, object>>>> GetUsers(UserQuery query, CancellationToken cancellation = default)
+        public async Task<PagedList<User<Dictionary<string, object>>>> GetUsers(UsersQuery query, CancellationToken cancellation = default)
         {
             return await GetUsers<Dictionary<string, object>>(query, cancellation);
         }
@@ -142,11 +142,11 @@ namespace Atlas.Core
         /// Get the paginated list of users 
         /// </summary>
         /// <typeparam name="T">The type of Attributes of the users.</typeparam>
-        /// <param name="query">The optional <see cref="UserQuery"/> to filter the users.</param>
+        /// <param name="query">The optional <see cref="UsersQuery"/> to filter the users.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="PagedList{User{T}}"/> with paging information and the list of <see cref="User{T}"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<User<T>>> GetUsers<T>(UserQuery query, CancellationToken cancellation = default) where T : class
+        public async Task<PagedList<User<T>>> GetUsers<T>(UsersQuery query, CancellationToken cancellation = default) where T : class
         {
             var request = new RestRequest("/api/users").AddQuery(query);
 

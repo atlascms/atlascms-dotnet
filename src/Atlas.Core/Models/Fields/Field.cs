@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core.Models.Fields
 {
-    public class IField
+    public class Field 
     {
         public string Key { get; set; }
         public string Label { get; set; }
@@ -17,5 +18,8 @@ namespace Atlas.Core.Models.Fields
         public bool Hidden { get; set; }
         public bool ReadOnly { get; set; }
         public bool Required { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
     }
 }

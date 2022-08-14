@@ -19,7 +19,8 @@ namespace Atlas.Core.Models
         public string Key { get; set; }
         public string Description { get; set; }
         public SchemaType Type { get; init; }
-        public List<IField> Attributes { get; set; } = new List<IField>();
+        //public List<Dictionary<string, object>> Attributes { get; set; } = new List<Dictionary<string, object>>();
+        public List<Field> Attributes { get; set; } = new List<Field>();
         public DateTime CreatedAt { get; private set; }
         public string CreatedBy { get; private set; }
         public DateTime ModifiedAt { get; private set; }

@@ -107,7 +107,7 @@ namespace Atlas.Core.Extensions
             return request.AddPaging(query).AddSorting(query);
         }
 
-        public static RestRequest AddQuery(this RestRequest request, UserQuery query)
+        public static RestRequest AddQuery(this RestRequest request, UsersQuery query)
         {
             if (query == null)
             {
@@ -142,6 +142,28 @@ namespace Atlas.Core.Extensions
             if (!string.IsNullOrEmpty(query.Search))
             {
                 request.AddQueryParameter("search", query.Search);
+            }
+
+            return request.AddPaging(query).AddSorting(query);
+        }
+
+        public static RestRequest AddQuery(this RestRequest request, ModelsQuery query)
+        {
+            if (query == null)
+            {
+                return request;
+            }
+
+            request.AddQueryParameter("system", query.System);
+
+            return request.AddPaging(query).AddSorting(query);
+        }
+
+        public static RestRequest AddQuery(this RestRequest request, ComponentsQuery query)
+        {
+            if (query == null)
+            {
+                return request;
             }
 
             return request.AddPaging(query).AddSorting(query);

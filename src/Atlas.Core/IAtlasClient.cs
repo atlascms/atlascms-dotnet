@@ -273,6 +273,15 @@ namespace Atlas.Core
         Task<Model> GetModel(string id, CancellationToken cancellation = default);
 
         /// <summary>
+        /// Get the paged list of models
+        /// </summary>
+        /// <param name="query">The optional <see cref="ModelsQuery"/> to filter the media.</param>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="PagedList{Model}"/> with paging information and the list of <see cref="Model"/> objects.</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task<PagedList<Model>> GetModels(ModelsQuery query, CancellationToken cancellation = default);
+
+        /// <summary>
         /// Get the list of models
         /// </summary>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
@@ -288,7 +297,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Component"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<Model> GetComponent(string id, CancellationToken cancellation = default);
+        Task<Component> GetComponent(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Get the list of components
@@ -296,6 +305,15 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The list of <see cref="Component"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<List<Model>> GetAllComponents(CancellationToken cancellation = default);
+        Task<List<Component>> GetAllComponents(CancellationToken cancellation = default);
+
+        /// <summary>
+        /// Get the paged list of components
+        /// </summary>
+        /// <param name="query">The optional <see cref="ComponentsQuery"/> to filter the media.</param>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="PagedList{Component}"/> with paging information and the list of <see cref="Component"/> objects.</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task<PagedList<Component>> GetComponents(ComponentsQuery query, CancellationToken cancellation = default);
     }
 }

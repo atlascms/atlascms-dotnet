@@ -57,11 +57,11 @@ namespace Atlas.Core
         /// <summary>
         /// Get the paginated list of accounts 
         /// </summary>
-        /// <param name="query">The optional <see cref="AccountQuery"/> to filter the accounts.</param>
+        /// <param name="query">The optional <see cref="AccountsQuery"/> to filter the accounts.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="PagedList{Account}"/> with paging information and the list of <see cref="Account"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<PagedList<Account>> GetAccounts(AccountQuery query, CancellationToken cancellation = default);
+        Task<PagedList<Account>> GetAccounts(AccountsQuery query, CancellationToken cancellation = default);
 
         /// <summary>
         /// Authenticate the account

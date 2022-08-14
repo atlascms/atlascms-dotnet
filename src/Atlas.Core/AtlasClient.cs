@@ -468,7 +468,9 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<Model> GetModel(string id, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/content-types/models/{id}").AddUrlSegment("id", id);
+
+            return await GetAsync<Model>(request, cancellation);
         }
 
         /// <summary>
@@ -479,7 +481,21 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<List<Model>> GetAllModels(CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            return (await GetModels(new ModelsQuery { Size = int.MaxValue }, cancellation)).Data.ToList();
+        }
+
+        /// <summary>
+        /// Get the paged list of models
+        /// </summary>
+        /// <param name="query">The optional <see cref="ModelsQuery"/> to filter the media.</param>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="PagedList{Model}"/> with paging information and the list of <see cref="Model"/> objects.</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        public async Task<PagedList<Model>> GetModels(ModelsQuery query, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/content-types/models").AddQuery(query);
+
+            return await GetAsync<PagedList<Model>>(request, cancellation);
         }
 
         /// <summary>
@@ -489,9 +505,11 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Component"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Model> GetComponent(string id, CancellationToken cancellation = default)
+        public async Task<Component> GetComponent(string id, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/content-types/components/{id}").AddUrlSegment("id",id);
+
+            return await GetAsync<Component>(request, cancellation);
         }
 
         /// <summary>
@@ -500,9 +518,23 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The list of <see cref="Component"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Model>> GetAllComponents(CancellationToken cancellation = default)
+        public async Task<List<Component>> GetAllComponents(CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            return (await GetComponents(new ComponentsQuery { Size = int.MaxValue }, cancellation)).Data.ToList();
+        }
+
+        /// <summary>
+        /// Get the paged list of components
+        /// </summary>
+        /// <param name="query">The optional <see cref="ComponentsQuery"/> to filter the media.</param>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The <see cref="PagedList{Component}"/> with paging information and the list of <see cref="Component"/> objects.</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        public async Task<PagedList<Component>> GetComponents(ComponentsQuery query, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/content-types/components").AddQuery(query);
+
+            return await GetAsync<PagedList<Component>>(request, cancellation);
         }
     }
 }
