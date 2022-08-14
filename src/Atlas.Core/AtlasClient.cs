@@ -37,6 +37,7 @@ namespace Atlas.Core
         /// <summary>
         /// Create a content for a specific Model
         /// </summary>
+        /// <typeparam name="T">The type of Attributes of the content</typeparam>
         /// <param name="modelKey">The Key of the Model.</param>
         /// <param name="content">The object to serialize in the Attributes prop of a Content.</param>
         /// <param name="locale">The optional locale value. If empty it will create the object under the default locale.</param>
