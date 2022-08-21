@@ -147,6 +147,31 @@ namespace Atlas.Core.Extensions
             return request.AddPaging(query).AddSorting(query);
         }
 
+        public static RestRequest AddQuery(this RestRequest request, AccountsQuery query)
+        {
+            if (query == null)
+            {
+                return request;
+            }
+
+            if (!string.IsNullOrEmpty(query.Username))
+            {
+                request.AddQueryParameter("username", query.Search);
+            }
+
+            if (!string.IsNullOrEmpty(query.RoleId))
+            {
+                request.AddQueryParameter("roleid", query.RoleId);
+            }
+
+            if (!string.IsNullOrEmpty(query.Search))
+            {
+                request.AddQueryParameter("search", query.Search);
+            }
+
+            return request.AddPaging(query).AddSorting(query);
+        }
+
         public static RestRequest AddQuery(this RestRequest request, ModelsQuery query)
         {
             if (query == null)

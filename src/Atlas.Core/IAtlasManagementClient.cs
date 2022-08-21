@@ -31,11 +31,11 @@ namespace Atlas.Core
         /// <summary>
         /// Create a new account
         /// </summary>
-        /// <param name="account">The object to serialize as a <see cref="Account"/>.</param>
+        /// <param name="account">The object to serialize as a <see cref="RegisterAccount"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the account created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<string> CreateAccount(Account account, CancellationToken cancellation = default);
+        Task<string> CreateAccount(RegisterAccount account, CancellationToken cancellation = default);
 
         /// <summary>
         /// Delete the account with the ID provided

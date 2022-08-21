@@ -55,7 +55,11 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<string> CreateRole(Role role, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/roles").AddJsonBody(role);
+            var request = new RestRequest("/api/roles").AddJsonBody(new
+            {
+                name = role.Name,
+                permissions = role.Permissions,
+            });
 
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
@@ -165,10 +169,11 @@ namespace Atlas.Core
         {
             var request = new RestRequest("/api/users/login")
                                     .AddJsonBody(
-                                        new { 
-                                            username = username, 
+                                        new
+                                        {
+                                            username = username,
                                             password = password
-                                        }     
+                                        }
                                     );
 
             try

@@ -1,8 +1,10 @@
 ﻿using Atlas.Core.Configuration;
 using Atlas.Core.Exceptions;
+using Atlas.Core.Extensions;
 using Atlas.Core.Models;
 using Atlas.Core.Models.Collections;
 using Atlas.Core.Models.Queries;
+using Atlas.Core.Models.Shared;
 using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
 using System;
@@ -34,19 +36,31 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task ChangePassword(string id, string newPassword, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/accounts/{id}/change-password")
+                                .AddUrlSegment("id", id)
+                                .AddJsonBody(
+                                    new
+                                    {
+                                        Password = newPassword
+                                    }
+                                );
+
+            await PostAsync(request, cancellation);
         }
 
         /// <summary>
         /// Create a new account
         /// </summary>
-        /// <param name="account">The object to serialize as a <see cref="Account"/>.</param>
+        /// <param name="account">The object to serialize as a <see cref="RegisterAccount"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the account created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateAccount(Account account, CancellationToken cancellation = default)
+        public async Task<string> CreateAccount(RegisterAccount account, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/accounts")
+                                .AddJsonBody(account);
+
+            return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
         /// <summary>
@@ -58,7 +72,14 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<string> CreateAccountRole(AccountRole role, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/roles").AddJsonBody(
+                new
+                {
+                    name = role.Name,
+                    permissions = role.Permissions,
+                });
+
+            return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
         /// <summary>
@@ -70,7 +91,17 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<string> CreateApiKey(ApiKey apiKey, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/apikeys").AddJsonBody(
+                new
+                {
+                    name = apiKey.Name,
+                    isActive = apiKey.IsActive,
+                    validFrom = apiKey.ValidFrom,
+                    validTo = apiKey.ValidTo,
+                    permissions = apiKey.Permissions,
+                });
+
+            return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
         /// <summary>
@@ -82,7 +113,9 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<string> CreateWebhook(Webhook webhook, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/webhooks").AddJsonBody(webhook);
+
+            return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
         /// <summary>
@@ -146,7 +179,9 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<Account> GetAccount(string id, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/accounts/{id}").AddUrlSegment("id", id);
+
+            return await GetAsync<Account>(request, cancellation);
         }
 
         /// <summary>
@@ -157,7 +192,9 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<List<AccountRole>> GetAllAccountRoles(CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/roles");
+
+            return await GetAsync<List<AccountRole>>(request, cancellation);
         }
 
         /// <summary>
@@ -169,7 +206,9 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<PagedList<Account>> GetAccounts(AccountsQuery query, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/accounts").AddQuery(query);
+
+            return await GetAsync<PagedList<Account>>(request, cancellation);
         }
 
         /// <summary>
@@ -181,7 +220,9 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<ApiKey> GetApiKey(string id, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/apikeys/{id}").AddUrlSegment("id", id);
+
+            return await GetAsync<ApiKey>(request, cancellation);
         }
 
         /// <summary>
@@ -191,7 +232,9 @@ namespace Atlas.Core
         /// <returns>The list of <see cref="ApiKey"/> objects.</returns>
         public async Task<List<ApiKey>> GetAllApiKeys(CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/apikeys");
+
+            return await GetAsync<List<ApiKey>>(request, cancellation);
         }
 
         /// <summary>
@@ -216,7 +259,9 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<Webhook> GetWebhook(string id, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/webhooks/{id}").AddUrlSegment("id", id);
+
+            return await GetAsync<Webhook>(request, cancellation);
         }
 
         /// <summary>
@@ -227,7 +272,9 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<List<Webhook>> GetAllWebooks(CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/admin/webhooks");
+
+            return await GetAsync<List<Webhook>>(request, cancellation);
         }
 
         /// <summary>
