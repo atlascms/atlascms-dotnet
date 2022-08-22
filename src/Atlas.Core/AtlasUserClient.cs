@@ -35,7 +35,7 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task ChangePassword(string id, string newPassword, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/users/{id}")
+            var request = new RestRequest($"/api/users/{id}")
                                     .AddJsonBody(
                                         new
                                         {
