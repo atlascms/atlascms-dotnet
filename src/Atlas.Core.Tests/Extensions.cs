@@ -11,7 +11,7 @@ namespace Atlas.Core.Tests
                     .WithHeaders("Content-Type", $"application/json")
                     .WithHeaders("X-Atlas-SDK", $"atlas-dotnet/{typeof(ClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}; OS Windows;")
                     // .WithHeaders("User-Agent", "Atlas CMS .NET Client SDK")
-                    .Respond("application/json", "");
+                    ;
         }
     }
 }
