@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core
 {
-    public abstract class ClientBase
+    public abstract class ClientBase 
     {
         private RestClient _http;
         protected AtlasOptions _options;
@@ -65,7 +65,7 @@ namespace Atlas.Core
 
         private static string Version => typeof(ClientBase).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
-        private string _token = "";
+        protected string _token = "";
 
         protected void InitClient(RestClient http, AtlasOptions options)
         {
@@ -285,7 +285,7 @@ namespace Atlas.Core
         /// Set the Token to use as Authorization for the Request
         /// </summary>
         /// <param name="token">The token string</param>
-        protected void SetToken(string token)
+        internal void SetToken(string token)
         { 
             _token = token;
         }

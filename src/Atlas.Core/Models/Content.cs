@@ -59,8 +59,13 @@ namespace Atlas.Core.Models
         public T Attributes { get; set; }
 
         /// <summary>
+        /// Content Stage
+        /// </summary>
+        public Stages? Stage { get; set; }
+
+        /// <summary>
         /// Available Translations
         /// </summary>
-        public List<ContentLocale> Locales { get; private set; } = new List<ContentLocale>();
+        public List<ContentLocale> Locales { get; private set; }
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -17,7 +17,7 @@
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     <Company>Atlas CMS</Company>
     <Product>Atlas CMS .NET Client SDK</Product>
-    <Version>0.0.4-Preview</Version>
+    <Version>0.1.0</Version>
     <Authors>Atlas CMS</Authors>
   </PropertyGroup>
 

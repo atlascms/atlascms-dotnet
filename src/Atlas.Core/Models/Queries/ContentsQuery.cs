@@ -10,6 +10,7 @@ namespace Atlas.Core.Models.Queries
     {
         public string Filters { get; set; }
         public string Search { get; set; }
+        public string Stage { get; set; }
         public ContentResolver Resolvers { get; set; } = ContentResolver.None;
     }
 }

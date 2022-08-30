@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atlas.Core
+namespace Atlas.Core.Models
 {
-    public interface ISecuredClient
+    public enum Stages
     {
+        Unpublished = 0,
+        Published = 1,
     }
 }

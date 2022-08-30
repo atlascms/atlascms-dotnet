@@ -448,18 +448,6 @@ namespace Atlas.Core
         #endregion
 
         /// <summary>
-        /// Set the token to use as Authorization on the next API call. 
-        /// </summary>
-        /// <param name="token">the token to use.</param>
-        /// <returns>The instance of the client.</returns>
-        public IAtlasClient UseToken(string token)
-        {
-            base.SetToken(token);
-
-            return this;
-        }
-
-        /// <summary>
         /// Get the model with the ID provided
         /// </summary>
         /// <param name="id">The ID of the model to fetch.</param>
@@ -535,6 +523,36 @@ namespace Atlas.Core
             var request = new RestRequest("/api/content-types/components").AddQuery(query);
 
             return await GetAsync<PagedList<Component>>(request, cancellation);
+        }
+
+        /// <summary>
+        /// Publish a content
+        /// </summary>
+        /// <param name="modelKey">The Key of the Model.</param>
+        /// <param name="id">The ID of content to update.</param>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        public async Task PublishContent(string modelKey, string id, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/contents/{model}/{id}/publish")
+                                .AddUrlSegment("model", modelKey)
+                                .AddUrlSegment("id", id);
+
+            await PostAsync(request, cancellation);
+        }
+
+        /// <summary>
+        /// Unpublish a content
+        /// </summary>
+        /// <param name="modelKey">The Key of the Model.</param>
+        /// <param name="id">The ID of content to update.</param>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        public async Task UnpublishContent(string modelKey, string id, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/contents/{model}/{id}/unpublish")
+                                .AddUrlSegment("model", modelKey)
+                                .AddUrlSegment("id", id);
+
+            await PostAsync(request, cancellation);
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Atlas.Core.Models
         public bool IsSingle { get; set; }
         public bool System { get; set; }
         public bool Localizable { get; set; }
+        public bool? EnableStageMode { get; set; }
     }
 
     public enum SchemaType

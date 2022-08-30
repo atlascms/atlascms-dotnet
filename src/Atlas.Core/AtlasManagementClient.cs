@@ -383,7 +383,21 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<string> CreateModel(Model model, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/content-types/models")
+                                .AddJsonBody(
+                                    new
+                                    {
+                                        Key = model.Key,
+                                        Name = model.Name,
+                                        Description = model.Description,
+                                        IsSingle = model.IsSingle,
+                                        Localizable = model.Localizable,
+                                        EnableStageMode = model.EnableStageMode,
+                                        Attributes = model.Attributes,
+                                    }
+                                );
+
+            return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
         /// <summary>
@@ -423,7 +437,18 @@ namespace Atlas.Core
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         public async Task<string> CreateComponent(Component component, CancellationToken cancellation = default)
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("/api/content-types/components")
+                                .AddJsonBody(
+                                    new
+                                    {
+                                        Key = component.Key,
+                                        Name = component.Name,
+                                        Description = component.Description,
+                                        Attributes = component.Attributes
+                                    }
+                                );
+
+            return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
         /// <summary>

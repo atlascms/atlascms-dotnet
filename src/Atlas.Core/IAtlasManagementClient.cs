@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core
 {
-    public interface IAtlasManagementClient
+    public interface IAtlasManagementClient : ISecuredClient
     {
         /// <summary>
         /// Get all settings of the project

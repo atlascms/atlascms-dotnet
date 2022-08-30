@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core
 {
-    public interface IAtlasUserClient
+    public interface IAtlasUserClient : ISecuredClient
     {
         /// <summary>
         /// Set a new password for the user

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core
 {
-    public interface IAtlasClient 
+    public interface IAtlasClient : ISecuredClient
     {
         /// <summary>
         /// Create a content for a specific Model
@@ -138,6 +138,22 @@ namespace Atlas.Core
         Task UpdateContent(string modelKey, string id, Dictionary<string, object> content, CancellationToken cancellation = default);
 
         /// <summary>
+        /// Publish a content
+        /// </summary>
+        /// <param name="modelKey">The Key of the Model.</param>
+        /// <param name="id">The ID of content to update.</param>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task PublishContent(string modelKey, string id, CancellationToken cancellation = default);
+
+        /// <summary>
+        /// Unpublish a content
+        /// </summary>
+        /// <param name="modelKey">The Key of the Model.</param>
+        /// <param name="id">The ID of content to update.</param>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task UnpublishContent(string modelKey, string id, CancellationToken cancellation = default);
+
+        /// <summary>
         /// Delete the media with the ID provided
         /// </summary>
         /// <param name="id">The ID of the media to delete.</param>
@@ -244,13 +260,6 @@ namespace Atlas.Core
         /// <returns>The full path of the renamed.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
         Task<string> RenameFolder(string folder, string newName, CancellationToken cancellation = default);
-
-        /// <summary>
-        /// Set the token to use as Authorization on the next API call. 
-        /// </summary>
-        /// <param name="token">the token to use.</param>
-        /// <returns>The instance of the client.</returns>
-        IAtlasClient UseToken(string token);
 
         /// <summary>
         /// The Users & Roles API Client

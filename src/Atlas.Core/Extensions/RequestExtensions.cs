@@ -74,6 +74,11 @@ namespace Atlas.Core.Extensions
                 request.AddQueryParameter("search", query.Search);
             }
 
+            if (!string.IsNullOrEmpty(query.Stage))
+            {
+                request.AddQueryParameter("stage", query.Stage);
+            }
+
             return request.AddPaging(query).AddSorting(query);
         }
 
