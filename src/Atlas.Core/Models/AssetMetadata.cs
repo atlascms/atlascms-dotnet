@@ -11,16 +11,16 @@ namespace Atlas.Core.Models
         /// <summary>
         /// The Alternate text
         /// </summary>
-        public string Alt { get; }
+        public string Alt { get; set; }
 
         /// <summary>
         /// The Title of asset
         /// </summary>
-        public string Title { get; }
+        public string Title { get; set; }
 
         /// <summary>
         /// The notes related to the asset
         /// </summary>
-        public string Notes { get; }
+        public string Notes { get; set; }
     }
 }

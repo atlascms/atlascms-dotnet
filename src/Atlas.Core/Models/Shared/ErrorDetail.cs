@@ -14,6 +14,6 @@ namespace Atlas.Core.Models.Shared
         public string Details { get; set; } = null;
 
         [JsonExtensionData]
-        public IDictionary<string, object> Data { get; } = new Dictionary<string, object>(StringComparer.Ordinal);
+        public IDictionary<string, object> Data { get; set; } = new Dictionary<string, object>(StringComparer.Ordinal);
     }
 }

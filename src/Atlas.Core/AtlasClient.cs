@@ -31,12 +31,47 @@ namespace Atlas.Core
         /// Initializes a new instance of the <see cref="AtlasClient"/> class.
         /// </summary>
         /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
-        public AtlasClient(RestClient http, AtlasOptions options, IAtlasUserClient userClient, IAtlasManagementClient managementClient)
+        public AtlasClient(AtlasOptions options)
         {
-            InitClient(http, options);
+            var http = CreateClient(options);
 
+            var userClient = new AtlasUserClient(http, options);
+            var managementClient = new AtlasManagementClient(http, options);
+
+            Initialize(userClient, managementClient);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AtlasClient"/> class.
+        /// </summary>
+        /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
+        /// <param name="userClient">The <see cref="IAtlasUserClient"/>.</param>
+        /// <param name="managementClient">The <see cref="IAtlasManagementClient"/>.</param>
+        public AtlasClient(AtlasOptions options, IAtlasUserClient userClient, IAtlasManagementClient managementClient)
+        {
+            var http = CreateClient(options);
+
+            Initialize(userClient, managementClient);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AtlasClient"/> class.
+        /// </summary>
+        /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
+        /// <param name="http">The <see cref="RestClient"/>.</param>
+        /// <param name="userClient">The <see cref="IAtlasUserClient"/>.</param>
+        /// <param name="managementClient">The <see cref="IAtlasManagementClient"/>.</param>
+        public AtlasClient(AtlasOptions options, RestClient http, IAtlasUserClient userClient, IAtlasManagementClient managementClient)
+        {
+            SetClient(http, options);
+
+            Initialize(userClient, managementClient);
+        }
+
+        private void Initialize(IAtlasUserClient userClient, IAtlasManagementClient managementClient)
+        {
             Users = userClient;
-            Management = managementClient;  
+            Management = managementClient;
         }
 
         #region -- contents --
@@ -287,6 +322,23 @@ namespace Atlas.Core
             var request = new RestRequest("/api/media-library/media").AddQuery(query);
 
             return await GetAsync<PagedList<Asset>>(request, cancellation);
+        }
+
+        /// <summary>
+        /// Set the tags to an Asset
+        /// </summary>
+        /// <param name="id">The ID of the media to fetch.</param>
+        /// <param name="tags">The list of tags to assign.</param>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The ID of the media created</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        public async Task SetAssetTags(string id, IEnumerable<string> tags, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/media-library/media/{id}/tags")
+                                .AddUrlSegment("id", id)
+                                .AddJsonBody(new { tags = tags });
+
+            await PostAsync(request, cancellation);
         }
 
         /// <summary>

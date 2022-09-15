@@ -23,7 +23,7 @@ namespace Atlas.Core
         /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
         public AtlasUserClient(RestClient http, AtlasOptions options)
         {
-            InitClient(http, options);
+            SetClient(http, options);
         }
 
         /// <summary>

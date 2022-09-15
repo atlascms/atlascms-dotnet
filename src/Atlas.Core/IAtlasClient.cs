@@ -196,6 +196,16 @@ namespace Atlas.Core
         Task<PagedList<Asset>> GetAssets(AssetsQuery query, CancellationToken cancellation = default);
 
         /// <summary>
+        /// Set the tags to an Asset
+        /// </summary>
+        /// <param name="id">The ID of the media to fetch.</param>
+        /// <param name="tags">The list of tags to assign.</param>
+        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
+        /// <returns>The ID of the media created</returns>
+        /// <exception cref="AtlasException">The API Exception returned.</exception>
+        Task SetAssetTags(string id, IEnumerable<string> tags, CancellationToken cancellation = default);
+
+        /// <summary>
         /// Upload a media to the Media Library
         /// </summary>
         /// <param name="fileName">The name of the file to store in the Media Library.</param>

@@ -67,10 +67,24 @@ namespace Atlas.Core
 
         protected string _token = "";
 
-        protected void InitClient(RestClient http, AtlasOptions options)
+        protected RestClient CreateClient(AtlasOptions options)
         {
-            _options = options;
-            _http = http;           
+            var restClientOptions = new RestClientOptions
+            {
+                BaseUrl = new Uri(options.BaseUrl)
+            };
+
+            var client = new RestClient(restClientOptions).UseNewtonsoftJson(options.SerializerOptions);
+
+            SetClient(client, options);
+
+            return client;
+        }
+
+        protected void SetClient(RestClient http, AtlasOptions options)
+        {
+            _http = http;
+            _options = options; 
         }
 
         /// <summary>

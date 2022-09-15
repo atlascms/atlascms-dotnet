@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Atlas.Core.Models.Collections
 {
+    [Serializable]
     public class PagedListMetadata
     {
-        public int CurrentPage { get; }
-        public int PageSize { get; }
-        public bool HasPreviousPage { get; }
-        public bool HasNextPage { get; }
-        public int TotalPages { get; }
-        public int Count { get; }
+        public int CurrentPage { get; private set; }
+        public int PageSize { get; private set; }
+        public bool HasPreviousPage { get; private set; }
+        public bool HasNextPage { get; private set; }
+        public int TotalPages { get; private set; }
+        public int Count { get; private set; }
     }
 }
