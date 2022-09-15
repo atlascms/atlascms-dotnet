@@ -39,7 +39,7 @@ namespace Atlas.Core.Models.Queries
 
         public override string ToString()
         {
-            return string.Join("$", _filters.ToArray());
+            return string.Join("&", _filters.ToArray());
         }
 
         public static implicit operator String(FilterBuilder builder)
