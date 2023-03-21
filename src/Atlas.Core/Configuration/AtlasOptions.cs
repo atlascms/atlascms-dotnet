@@ -19,7 +19,17 @@ namespace Atlas.Core.Configuration
         /// <summary>
         /// The Global Api Key used for authorization
         /// </summary>
-        public string ApiKey { get; set; }  
+        public string ApiKey { get; set; }
+
+        /// <summary>
+        /// The Organization Key
+        /// </summary>
+        public string Organization { get; set; }
+
+        /// <summary>
+        /// The Project Key to interact with (not used for organization level actions)  
+        /// </summary>
+        public string Project { get; set; }
 
         /// <summary>
         /// The Newtonsoft.Json.Net Serializer Settings

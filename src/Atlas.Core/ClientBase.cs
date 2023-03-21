@@ -1,6 +1,6 @@
 ﻿using Atlas.Core.Configuration;
 using Atlas.Core.Exceptions;
-using Atlas.Core.Extensions;
+using Atlas.Core.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -17,7 +17,7 @@ namespace Atlas.Core
 {
     public abstract class ClientBase 
     {
-        private RestClient _http;
+        protected RestClient _http;
         protected AtlasOptions _options;
         
         private string Os => IsWindows ? "Windows" : IsMacOS ? "macOS" : "Linux";
@@ -79,6 +79,13 @@ namespace Atlas.Core
             SetClient(client, options);
 
             return client;
+        }
+
+        protected RestRequest CreateProjectRequest(string project, string resource)
+        { 
+            var request = new RestRequest($"api/{project}/{resource.TrimStart('/')}");
+
+            return request;
         }
 
         protected void SetClient(RestClient http, AtlasOptions options)

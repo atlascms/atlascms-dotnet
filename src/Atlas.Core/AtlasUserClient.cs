@@ -1,6 +1,5 @@
 ﻿using Atlas.Core.Configuration;
 using Atlas.Core.Exceptions;
-using Atlas.Core.Extensions;
 using Atlas.Core.Models;
 using Atlas.Core.Models.Shared;
 using Atlas.Core.Models.Collections;
@@ -12,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Atlas.Core.Infrastructure;
 
 namespace Atlas.Core
 {
@@ -26,34 +26,23 @@ namespace Atlas.Core
             SetClient(http, options);
         }
 
-        /// <summary>
-        /// Set a new password for the user
-        /// </summary>
-        /// <param name="id">The user ID.</param>
-        /// <param name="newPassword">The new password to set.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task ChangePassword(string id, string newPassword, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.ChangePasswordAsync(string, string, CancellationToken)"/>
+        public async Task ChangePasswordAsync(string id, string newPassword, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/users/{id}")
+            var request = new RestRequest("/api/users/{id}/change-password")
+                                    .AddUrlSegment("id", id)
                                     .AddJsonBody(
                                         new
                                         {
                                             password = newPassword
                                         }
                                     );
-
+        
             await PostAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Create a new role
-        /// </summary>
-        /// <param name="role">The object to serialize as a <see cref="Role"/>.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the role created.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateRole(Role role, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.CreateRoleAsync(Role, CancellationToken)"/>
+        public async Task<string> CreateRoleAsync(Role role, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/roles").AddJsonBody(new
             {
@@ -64,108 +53,68 @@ namespace Atlas.Core
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Delete the role with the ID provided
-        /// </summary>
-        /// <param name="id">The role ID.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteRole(string id, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.DeleteRoleAsync(string, CancellationToken)"/>
+        public async Task DeleteRoleAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/roles/{id}").AddUrlSegment("id", id);
 
             await DeleteAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Delete the user with the ID provided
-        /// </summary>
-        /// <param name="id">The user ID.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteUser(string id, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.DeleteUserAsync(string, CancellationToken)"/>
+        public async Task DeleteUserAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/users/{id}").AddUrlSegment("id", id);
 
             await DeleteAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the list of roles
-        /// </summary>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="List{Role}"/>.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Role>> GetAllRoles(CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.GetAllRolesAsync(CancellationToken)"/>
+        public async Task<List<Role>> GetAllRolesAsync(CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/roles");
 
             return await GetAsync<List<Role>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the user with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the user to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="User{T}"/> with the Attribute as <see cref="Dictionary{TKey, TValue}"/>.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<User<Dictionary<string, object>>> GetUser(string id, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.GetUserAsync(string, CancellationToken)"/>
+        public async Task<User<Dictionary<string, object>>> GetUserAsync(string id, CancellationToken cancellation = default)
         {
-            return await GetUser<Dictionary<string, object>>(id, cancellation);
+            return await GetUserAsync<Dictionary<string, object>>(id, cancellation);
         }
 
-        /// <summary>
-        /// Get the user with the ID provided
-        /// </summary>
-        /// <typeparam name="T">The type of Attributes of the user.</typeparam>
-        /// <param name="id">The ID of the user to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="User{T}"/> with the Attribute as <see cref="T"/>.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<User<T>> GetUser<T>(string id, CancellationToken cancellation = default) where T : class
+        /// <inheritdoc cref="IAtlasUserClient.GetUserAsync{T}(string, CancellationToken)"/>
+        public async Task<User<T>> GetUserAsync<T>(string id, CancellationToken cancellation = default) where T : class
         {
             var request = new RestRequest("/api/users/{id}").AddUrlSegment("id", id);
 
             return await GetAsync<User<T>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the paginated list of users 
-        /// </summary>
-        /// <param name="query">The optional <see cref="UsersQuery"/> to filter the users.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="PagedList{User{Dictionary{TKey,TValue}}}"/> with paging information and the list of <see cref="User{Dictionary{TKey,TValue}}"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<User<Dictionary<string, object>>>> GetUsers(UsersQuery query, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.GetUsersAsync(UsersQuery, CancellationToken)"/>
+        public async Task<PagedList<User<Dictionary<string, object>>>> GetUsersAsync(UsersQuery query, CancellationToken cancellation = default)
         {
-            return await GetUsers<Dictionary<string, object>>(query, cancellation);
+            return await GetUsersAsync<Dictionary<string, object>>(query, cancellation);
         }
 
-        /// <summary>
-        /// Get the paginated list of users 
-        /// </summary>
-        /// <typeparam name="T">The type of Attributes of the users.</typeparam>
-        /// <param name="query">The optional <see cref="UsersQuery"/> to filter the users.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="PagedList{User{T}}"/> with paging information and the list of <see cref="User{T}"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<User<T>>> GetUsers<T>(UsersQuery query, CancellationToken cancellation = default) where T : class
+        /// <inheritdoc cref="IAtlasUserClient.GetUsersAsync{T}(UsersQuery, CancellationToken)"/>
+        public async Task<PagedList<User<T>>> GetUsersAsync<T>(UsersQuery query, CancellationToken cancellation = default) where T : class
         {
             var request = new RestRequest("/api/users").AddQuery(query);
 
             return await GetAsync<PagedList<User<T>>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Authenticate the user
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <param name="password">The password.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="AuthToken"/> if authenticated, or null if it is not possible to authenticate the user.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<AuthToken> Login(string username, string password, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.CountUsersAsync(UsersQuery, CancellationToken)"/>
+        public async Task<int> CountUsersAsync(UsersQuery query, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/users/count").AddQuery(query);
+
+            return (await GetAsync<KeyResult<int>>(request, cancellation)).Result;
+        }
+
+        /// <inheritdoc cref="IAtlasUserClient.LoginAsync(string, string, CancellationToken)"/>
+        public async Task<AuthToken> LoginAsync(string username, string password, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/users/login")
                                     .AddJsonBody(
@@ -194,65 +143,36 @@ namespace Atlas.Core
             }
         }
 
-        /// <summary>
-        /// Create a new user
-        /// </summary>
-        /// <param name="user">The object to serialize as a <see cref="RegisterUser"/>.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the user created.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> RegisterUser(RegisterUser user, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.RegisterUserAsync(RegisterUser, CancellationToken)"/>
+        public async Task<string> RegisterUserAsync(RegisterUser user, CancellationToken cancellation = default)
         {
-            return await RegisterUser<Dictionary<string, object>>(user, cancellation);
+            return await RegisterUserAsync<Dictionary<string, object>>(user, cancellation);
         }
 
-        /// <summary>
-        /// Create a new user
-        /// </summary>
-        /// <typeparam name="T">The type of Attributes of the user</typeparam>
-        /// <param name="user">The object to serialize as a <see cref="RegisterUser{T}"/>.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the user created.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> RegisterUser<T>(RegisterUser<T> user, CancellationToken cancellation = default) where T : class
+        /// <inheritdoc cref="IAtlasUserClient.RegisterUserAsync{T}(RegisterUser{T}, CancellationToken)"/>
+        public async Task<string> RegisterUserAsync<T>(RegisterUser<T> user, CancellationToken cancellation = default) where T : class
         {
             var request = new RestRequest("/api/users/register").AddJsonBody(user);
 
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Update an existing role
-        /// </summary>
-        /// <param name="role">The object to serialize as a <see cref="Role"/>.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateRole(Role role, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.UpdateRoleAsync(Role, CancellationToken)"/>
+        public async Task UpdateRoleAsync(Role role, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/roles").AddJsonBody(role);
 
             await PutAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Update an existing user
-        /// </summary>
-        /// <param name="user">The object to serialize as a <see cref="User"/>.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateUser(User user, CancellationToken cancellation = default)
+        /// <inheritdoc cref="IAtlasUserClient.UpdateUserAsync(User, CancellationToken)"/>
+        public async Task UpdateUserAsync(User user, CancellationToken cancellation = default)
         {
-            await UpdateUser<Dictionary<string, object>>(user, cancellation);
+            await UpdateUserAsync<Dictionary<string, object>>(user, cancellation);
         }
 
-        /// <summary>
-        /// Update an existing user
-        /// </summary>
-        /// <typeparam name="T">The type of Attributes of the user.</typeparam>
-        /// <param name="user">The object to serialize as a <see cref="User{T}"/>.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateUser<T>(User<T> user, CancellationToken cancellation = default) where T : class
+        /// <inheritdoc cref="IAtlasUserClient.UpdateUserAsync{T}(User{T}, CancellationToken)"/>
+        public async Task UpdateUserAsync<T>(User<T> user, CancellationToken cancellation = default) where T : class
         {
             var request = new RestRequest("/api/users/{id}").AddUrlSegment("id", user.Id).AddJsonBody(user);
 

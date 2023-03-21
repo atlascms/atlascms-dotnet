@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Atlas.Core.Extensions
+namespace Atlas.Core.Infrastructure
 {
     public static class RequestExtensions
     {
@@ -39,7 +39,7 @@ namespace Atlas.Core.Extensions
                 var filters = query.Filters.Split('&');
 
                 foreach (var filter in filters)
-                { 
+                {
                     var parts = filter.Split('=');
 
                     if (parts.Length == 2)

@@ -17,7 +17,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Settings"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<Settings> GetSettings(CancellationToken cancellation = default);
+        Task<Settings> GetSettingsAsync(CancellationToken cancellation = default);
 
         /// <summary>
         /// Set a new password for the account
@@ -26,7 +26,7 @@ namespace Atlas.Core
         /// <param name="newPassword">The new password to set.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task ChangePassword(string id, string newPassword, CancellationToken cancellation = default);
+        Task ChangePasswordAsync(string id, string newPassword, CancellationToken cancellation = default);
 
         /// <summary>
         /// Create a new account
@@ -35,7 +35,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the account created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<string> CreateAccount(RegisterAccount account, CancellationToken cancellation = default);
+        Task<string> CreateAccountAsync(RegisterAccount account, CancellationToken cancellation = default);
 
         /// <summary>
         /// Delete the account with the ID provided
@@ -43,7 +43,7 @@ namespace Atlas.Core
         /// <param name="id">The account ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task DeleteAccount(string id, CancellationToken cancellation = default);
+        Task DeleteAccountAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Get the account with the ID provided
@@ -52,7 +52,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Account"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<Account> GetAccount(string id, CancellationToken cancellation = default);
+        Task<Account> GetAccountAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Get the paginated list of accounts 
@@ -61,7 +61,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="PagedList{Account}"/> with paging information and the list of <see cref="Account"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<PagedList<Account>> GetAccounts(AccountsQuery query, CancellationToken cancellation = default);
+        Task<PagedList<Account>> GetAccountsAsync(AccountsQuery query, CancellationToken cancellation = default);
 
         /// <summary>
         /// Authenticate the account
@@ -71,7 +71,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="AuthToken"/> if authenticated, or null if it is not possible to authenticate the account.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<AuthToken> Login(string username, string password, CancellationToken cancellation = default);
+        Task<AuthToken> LoginAsync(string username, string password, CancellationToken cancellation = default);
 
         /// <summary>
         /// Update an existing account
@@ -79,7 +79,7 @@ namespace Atlas.Core
         /// <param name="account">The object to serialize as a <see cref="Account"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task UpdateAccount(Account account, CancellationToken cancellation = default);
+        Task UpdateAccountAsync(Account account, CancellationToken cancellation = default);
 
         /// <summary>
         /// Get the list of roles
@@ -87,7 +87,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="List{Role}"/>.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<List<AccountRole>> GetAllAccountRoles(CancellationToken cancellation = default);
+        Task<List<AccountRole>> GetAllAccountRolesAsync(CancellationToken cancellation = default);
 
         /// <summary>
         /// Create a new role
@@ -96,7 +96,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the role created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<string> CreateAccountRole(AccountRole role, CancellationToken cancellation = default);
+        Task<string> CreateAccountRoleAsync(AccountRole role, CancellationToken cancellation = default);
 
         /// <summary>
         /// Update an existing role
@@ -104,7 +104,7 @@ namespace Atlas.Core
         /// <param name="role">The object to serialize as a <see cref="Role"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task UpdateAccountRole(AccountRole role, CancellationToken cancellation = default);
+        Task UpdateAccountRoleAsync(AccountRole role, CancellationToken cancellation = default);
 
         /// <summary>
         /// Delete the role with the ID provided
@@ -112,7 +112,7 @@ namespace Atlas.Core
         /// <param name="id">The role ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task DeleteAccountRole(string id, CancellationToken cancellation = default);
+        Task DeleteAccountRoleAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Create a new webook
@@ -121,7 +121,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the webhook created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<string> CreateWebhook(Webhook webhook, CancellationToken cancellation = default);
+        Task<string> CreateWebhookAsync(Webhook webhook, CancellationToken cancellation = default);
 
         /// <summary>
         /// Delete the webhook with the ID provided
@@ -129,7 +129,7 @@ namespace Atlas.Core
         /// <param name="id">The webhook ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task DeleteWebhook(string id, CancellationToken cancellation = default);
+        Task DeleteWebhookAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Get the webook with the ID provided
@@ -138,7 +138,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Webhook"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<Webhook> GetWebhook(string id, CancellationToken cancellation = default);
+        Task<Webhook> GetWebhookAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Get the list of webhooks
@@ -146,7 +146,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The list of <see cref="Webhook"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<List<Webhook>> GetAllWebooks(CancellationToken cancellation = default);
+        Task<List<Webhook>> GetAllWebooksAsync(CancellationToken cancellation = default);
 
         /// <summary>
         /// Update an existing webhook
@@ -154,7 +154,7 @@ namespace Atlas.Core
         /// <param name="webhook">The object to serialize as a <see cref="Webhook"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task UpdateWebhook(Webhook webhook, CancellationToken cancellation = default);
+        Task UpdateWebhookAsync(Webhook webhook, CancellationToken cancellation = default);
 
         /// <summary>
         /// Create a new api key
@@ -163,7 +163,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the webhook created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<string> CreateApiKey(ApiKey apiKey, CancellationToken cancellation = default);
+        Task<string> CreateApiKeyAsync(ApiKey apiKey, CancellationToken cancellation = default);
 
         /// <summary>
         /// Delete the api key with the ID provided
@@ -171,7 +171,7 @@ namespace Atlas.Core
         /// <param name="id">The api key ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task DeleteApiKey(string id, CancellationToken cancellation = default);
+        Task DeleteApiKeyAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Get the api key with the ID provided
@@ -180,7 +180,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="ApiKey"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<ApiKey> GetApiKey(string id, CancellationToken cancellation = default);
+        Task<ApiKey> GetApiKeyAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Get the list of api keys
@@ -188,7 +188,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The list of <see cref="ApiKey"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<List<ApiKey>> GetAllApiKeys(CancellationToken cancellation = default);
+        Task<List<ApiKey>> GetAllApiKeysAsync(CancellationToken cancellation = default);
 
         /// <summary>
         /// Update an existing webhook
@@ -196,7 +196,7 @@ namespace Atlas.Core
         /// <param name="apiKey">The object to serialize as a <see cref="ApiKey"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task UpdateApiKey(ApiKey apiKey, CancellationToken cancellation = default);
+        Task UpdateApiKeyAsync(ApiKey apiKey, CancellationToken cancellation = default);
 
         /// <summary>
         /// Create a new model
@@ -205,7 +205,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the webhook created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<string> CreateModel(Model model, CancellationToken cancellation = default);
+        Task<string> CreateModelAsync(Model model, CancellationToken cancellation = default);
 
         /// <summary>
         /// Delete the model with the ID provided
@@ -213,7 +213,7 @@ namespace Atlas.Core
         /// <param name="id">The model ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task DeleteModel(string id, CancellationToken cancellation = default);
+        Task DeleteModelAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Update an existing webhook
@@ -221,7 +221,7 @@ namespace Atlas.Core
         /// <param name="model">The object to serialize as a <see cref="Model"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task UpdateModel(Model model, CancellationToken cancellation = default);
+        Task UpdateModelAsync(Model model, CancellationToken cancellation = default);
 
         /// <summary>
         /// Create a new component
@@ -230,7 +230,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the webhook created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task<string> CreateComponent(Component component, CancellationToken cancellation = default);
+        Task<string> CreateComponentAsync(Component component, CancellationToken cancellation = default);
 
         /// <summary>
         /// Delete the component with the ID provided
@@ -238,7 +238,7 @@ namespace Atlas.Core
         /// <param name="id">The model ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task DeleteComponent(string id, CancellationToken cancellation = default);
+        Task DeleteComponentAsync(string id, CancellationToken cancellation = default);
 
         /// <summary>
         /// Update an existing component
@@ -246,7 +246,7 @@ namespace Atlas.Core
         /// <param name="component">The object to serialize as a <see cref="Component"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        Task UpdateComponent(Component component, CancellationToken cancellation = default);
+        Task UpdateComponentAsync(Component component, CancellationToken cancellation = default);
 
     }
 }

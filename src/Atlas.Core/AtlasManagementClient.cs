@@ -1,6 +1,6 @@
 ﻿using Atlas.Core.Configuration;
 using Atlas.Core.Exceptions;
-using Atlas.Core.Extensions;
+using Atlas.Core.Infrastructure;
 using Atlas.Core.Models;
 using Atlas.Core.Models.Collections;
 using Atlas.Core.Models.Queries;
@@ -34,7 +34,7 @@ namespace Atlas.Core
         /// <param name="newPassword">The new password to set.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task ChangePassword(string id, string newPassword, CancellationToken cancellation = default)
+        public async Task ChangePasswordAsync(string id, string newPassword, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/accounts/{id}/change-password")
                                 .AddUrlSegment("id", id)
@@ -55,7 +55,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the account created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateAccount(RegisterAccount account, CancellationToken cancellation = default)
+        public async Task<string> CreateAccountAsync(RegisterAccount account, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/accounts")
                                 .AddJsonBody(account);
@@ -70,7 +70,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the role created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateAccountRole(AccountRole role, CancellationToken cancellation = default)
+        public async Task<string> CreateAccountRoleAsync(AccountRole role, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/roles").AddJsonBody(
                 new
@@ -89,7 +89,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the webhook created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateApiKey(ApiKey apiKey, CancellationToken cancellation = default)
+        public async Task<string> CreateApiKeyAsync(ApiKey apiKey, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/apikeys").AddJsonBody(
                 new
@@ -111,7 +111,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the webhook created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateWebhook(Webhook webhook, CancellationToken cancellation = default)
+        public async Task<string> CreateWebhookAsync(Webhook webhook, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/webhooks").AddJsonBody(webhook);
 
@@ -124,7 +124,7 @@ namespace Atlas.Core
         /// <param name="id">The account ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteAccount(string id, CancellationToken cancellation = default)
+        public async Task DeleteAccountAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/accounts/{id}").AddUrlSegment("id", id);
 
@@ -137,7 +137,7 @@ namespace Atlas.Core
         /// <param name="id">The role ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteAccountRole(string id, CancellationToken cancellation = default)
+        public async Task DeleteAccountRoleAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/roles/{id}").AddUrlSegment("id", id);
 
@@ -150,7 +150,7 @@ namespace Atlas.Core
         /// <param name="id">The api key ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteApiKey(string id, CancellationToken cancellation = default)
+        public async Task DeleteApiKeyAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/apikeys/{id}").AddUrlSegment("id", id);
 
@@ -163,7 +163,7 @@ namespace Atlas.Core
         /// <param name="id">The webhook ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteWebhook(string id, CancellationToken cancellation = default)
+        public async Task DeleteWebhookAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/webhooks/{id}").AddUrlSegment("id", id);
 
@@ -177,7 +177,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Account"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Account> GetAccount(string id, CancellationToken cancellation = default)
+        public async Task<Account> GetAccountAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/accounts/{id}").AddUrlSegment("id", id);
 
@@ -190,7 +190,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="List{Role}"/>.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<AccountRole>> GetAllAccountRoles(CancellationToken cancellation = default)
+        public async Task<List<AccountRole>> GetAllAccountRolesAsync(CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/roles");
 
@@ -204,7 +204,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="PagedList{Account}"/> with paging information and the list of <see cref="Account"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<Account>> GetAccounts(AccountsQuery query, CancellationToken cancellation = default)
+        public async Task<PagedList<Account>> GetAccountsAsync(AccountsQuery query, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/accounts").AddQuery(query);
 
@@ -218,7 +218,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="ApiKey"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<ApiKey> GetApiKey(string id, CancellationToken cancellation = default)
+        public async Task<ApiKey> GetApiKeyAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/apikeys/{id}").AddUrlSegment("id", id);
 
@@ -230,7 +230,7 @@ namespace Atlas.Core
         /// </summary>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The list of <see cref="ApiKey"/> objects.</returns>
-        public async Task<List<ApiKey>> GetAllApiKeys(CancellationToken cancellation = default)
+        public async Task<List<ApiKey>> GetAllApiKeysAsync(CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/apikeys");
 
@@ -243,7 +243,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Settings"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Settings> GetSettings(CancellationToken cancellation = default)
+        public async Task<Settings> GetSettingsAsync(CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/settings");
 
@@ -257,7 +257,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="Webhook"/> object.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Webhook> GetWebhook(string id, CancellationToken cancellation = default)
+        public async Task<Webhook> GetWebhookAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/webhooks/{id}").AddUrlSegment("id", id);
 
@@ -270,7 +270,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The list of <see cref="Webhook"/> objects.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Webhook>> GetAllWebooks(CancellationToken cancellation = default)
+        public async Task<List<Webhook>> GetAllWebooksAsync(CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/webhooks");
 
@@ -285,7 +285,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="AuthToken"/> if authenticated, or null if it is not possible to authenticate the account.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<AuthToken> Login(string username, string password, CancellationToken cancellation = default)
+        public async Task<AuthToken> LoginAsync(string username, string password, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/login")
                                     .AddJsonBody(
@@ -320,7 +320,7 @@ namespace Atlas.Core
         /// <param name="account">The object to serialize as a <see cref="Account"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateAccount(Account account, CancellationToken cancellation = default)
+        public async Task UpdateAccountAsync(Account account, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/accounts/{id}")
                                 .AddUrlSegment("id", account.Id)
@@ -335,7 +335,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The <see cref="List{Role}"/>.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateAccountRole(AccountRole role, CancellationToken cancellation = default)
+        public async Task UpdateAccountRoleAsync(AccountRole role, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/roles/{id}")
                                 .AddUrlSegment("id", role.Id)
@@ -350,7 +350,7 @@ namespace Atlas.Core
         /// <param name="apiKey">The object to serialize as a <see cref="ApiKey"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateApiKey(ApiKey apiKey, CancellationToken cancellation = default)
+        public async Task UpdateApiKeyAsync(ApiKey apiKey, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/apikeys/{id}")
                                 .AddUrlSegment("id", apiKey.Id)
@@ -365,7 +365,7 @@ namespace Atlas.Core
         /// <param name="webhook">The object to serialize as a <see cref="Webhook"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateWebhook(Webhook webhook, CancellationToken cancellation = default)
+        public async Task UpdateWebhookAsync(Webhook webhook, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/admin/webhooks/{id}")
                                 .AddUrlSegment("id", webhook.Id)
@@ -381,7 +381,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the webhook created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateModel(Model model, CancellationToken cancellation = default)
+        public async Task<string> CreateModelAsync(Model model, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/models")
                                 .AddJsonBody(
@@ -406,7 +406,7 @@ namespace Atlas.Core
         /// <param name="id">The model ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteModel(string id, CancellationToken cancellation = default)
+        public async Task DeleteModelAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/models/{id}").AddUrlSegment("id", id);
 
@@ -419,7 +419,7 @@ namespace Atlas.Core
         /// <param name="model">The object to serialize as a <see cref="Model"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateModel(Model model, CancellationToken cancellation = default)
+        public async Task UpdateModelAsync(Model model, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/models/{id}")
                                 .AddUrlSegment("id", model.Id)
@@ -435,7 +435,7 @@ namespace Atlas.Core
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <returns>The ID of the webhook created.</returns>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateComponent(Component component, CancellationToken cancellation = default)
+        public async Task<string> CreateComponentAsync(Component component, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/components")
                                 .AddJsonBody(
@@ -457,7 +457,7 @@ namespace Atlas.Core
         /// <param name="id">The model ID.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteComponent(string id, CancellationToken cancellation = default)
+        public async Task DeleteComponentAsync(string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/components/{id}").AddUrlSegment("id", id);
 
@@ -470,7 +470,7 @@ namespace Atlas.Core
         /// <param name="component">The object to serialize as a <see cref="Component"/>.</param>
         /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
         /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateComponent(Component component, CancellationToken cancellation = default)
+        public async Task UpdateComponentAsync(Component component, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/components/{id}")
                                 .AddUrlSegment("id", component.Id)

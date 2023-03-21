@@ -1,5 +1,4 @@
 ﻿using Atlas.Core.Configuration;
-using Atlas.Core.Extensions;
 using Atlas.Core.Models;
 using Atlas.Core.Models.Shared;
 using Atlas.Core.Models.Collections;
@@ -12,20 +11,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Atlas.Core.Infrastructure;
 
 namespace Atlas.Core
 {
     public class AtlasClient : ClientBase, IAtlasClient
     {
-        /// <summary>
-        /// The Users & Roles API Client
-        /// </summary>
-        public IAtlasUserClient Users { get; private set; }
-
-        /// <summary>
-        /// The Admin & Management API Client
-        /// </summary>
-        public IAtlasManagementClient Management { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AtlasClient"/> class.
@@ -37,21 +28,6 @@ namespace Atlas.Core
 
             var userClient = new AtlasUserClient(http, options);
             var managementClient = new AtlasManagementClient(http, options);
-
-            Initialize(userClient, managementClient);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AtlasClient"/> class.
-        /// </summary>
-        /// <param name="options">The configuration options <see cref="AtlasOptions"/>.</param>
-        /// <param name="userClient">The <see cref="IAtlasUserClient"/>.</param>
-        /// <param name="managementClient">The <see cref="IAtlasManagementClient"/>.</param>
-        public AtlasClient(AtlasOptions options, IAtlasUserClient userClient, IAtlasManagementClient managementClient)
-        {
-            var http = CreateClient(options);
-
-            Initialize(userClient, managementClient);
         }
 
         /// <summary>
@@ -61,35 +37,24 @@ namespace Atlas.Core
         /// <param name="http">The <see cref="RestClient"/>.</param>
         /// <param name="userClient">The <see cref="IAtlasUserClient"/>.</param>
         /// <param name="managementClient">The <see cref="IAtlasManagementClient"/>.</param>
-        public AtlasClient(AtlasOptions options, RestClient http, IAtlasUserClient userClient, IAtlasManagementClient managementClient)
+        public AtlasClient(AtlasOptions options, RestClient http)
         {
             SetClient(http, options);
-
-            Initialize(userClient, managementClient);
-        }
-
-        private void Initialize(IAtlasUserClient userClient, IAtlasManagementClient managementClient)
-        {
-            Users = userClient;
-            Management = managementClient;
         }
 
         #region -- contents --
 
-        /// <summary>
-        /// Create a content for a specific Model
-        /// </summary>
-        /// <typeparam name="T">The type of Attributes of the content</typeparam>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="content">The object to serialize in the Attributes prop of a Content.</param>
-        /// <param name="locale">The optional locale value. If empty it will create the object under the default locale.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the content created</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateContent<T>(string modelKey, T content, string locale = "", CancellationToken cancellation = default) where T : class
+        /// <inheritdoc/>
+        public async Task<string> CreateContentAsync<T>(string modelKey, T content, string locale = "", CancellationToken cancellation = default) where T : class
         {
-            var request = new RestRequest("/api/contents/{model}")
-                                .AddUrlSegment("model", modelKey)
+            return await CreateContentAsync(_options.Project, modelKey, content, locale, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> CreateContentAsync<T>(string project, string modelKey, T content, string locale = "", CancellationToken cancellation = default) where T : class
+        {
+
+            var request = CreateContentRequest(project, modelKey, "")
                                 .AddJsonBody(
                                     new
                                     {
@@ -101,33 +66,28 @@ namespace Atlas.Core
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Create a content for a specific Model
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="content">The <see cref="Dictionary{TKey, TValue}"/> to serialize in the Attributes prop of a Content.</param>
-        /// <param name="locale">The optional locale value. If empty it will create the object under the default locale.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the content created.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateContent(string modelKey, Dictionary<string, object> content, string locale = "", CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<string> CreateContentAsync(string modelKey, Dictionary<string, object> content, string locale = "", CancellationToken cancellation = default)
         {
-            return await CreateContent<Dictionary<string, object>>(modelKey, content, locale, cancellation);
+            return await CreateContentAsync<Dictionary<string, object>>(_options.Project, modelKey, content, locale, cancellation);
         }
 
-        /// <summary>
-        /// Create a localized versione of the content with the ID provided
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of the content to localize.</param>
-        /// <param name="locale">The locale to create.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the content created.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateTranslation(string modelKey, string id, string locale, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<string> CreateContentAsync(string project, string modelKey, Dictionary<string, object> content, string locale = "", CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/contents/{model}/{id}/create-translation")
-                               .AddUrlSegment("model", modelKey)
+            return await CreateContentAsync<Dictionary<string, object>>(project, modelKey, content, locale, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> CreateTranslationAsync(string modelKey, string id, string locale, CancellationToken cancellation = default)
+        {
+            return await CreateTranslationAsync(_options.Project, modelKey, id, locale, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> CreateTranslationAsync(string project, string modelKey, string id, string locale, CancellationToken cancellation = default)
+        {
+            var request = CreateContentRequest(project, modelKey, "{id}/create-translation").AddUrlSegment("id", id)
                                .AddJsonBody(
                                    new
                                    {
@@ -138,34 +98,31 @@ namespace Atlas.Core
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Delete the content with the ID provided
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of the content to delete.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteContent(string modelKey, string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task DeleteContentAsync(string modelKey, string id, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/contents/{model}/{id}")
-                                .AddUrlSegment("model", modelKey)
-                                .AddUrlSegment("id", id);
+            await DeleteContentAsync(_options.Project, modelKey, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteContentAsync(string project, string modelKey, string id, CancellationToken cancellation = default)
+        {
+            var request = CreateContentRequest(project, modelKey, "{id}").AddUrlSegment("id", id);
 
             await DeleteAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Duplicate a content
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of the content to duplicate.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the content duplicated.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> Duplicate(string modelKey, string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<string> DuplicateAsync(string modelKey, string id, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/contents/{model}/{id}/duplicate")
-                               .AddUrlSegment("model", modelKey)
+            return await DuplicateAsync(_options.Project, modelKey, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> DuplicateAsync(string project, string modelKey, string id, CancellationToken cancellation = default)
+        {
+            var request = CreateContentRequest(project, modelKey, "{id}/duplicate")
+                               .AddUrlSegment("id", id)
                                .AddJsonBody(
                                    new
                                    {
@@ -176,18 +133,17 @@ namespace Atlas.Core
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Duplicate a content and all its localized version
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of the content to duplicate.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The list of ID of the contents duplicated.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<IEnumerable<string>> DuplicateAll(string modelKey, string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> DuplicateAllAsync(string modelKey, string id, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/contents/{model}/{id}/duplicate")
-                               .AddUrlSegment("model", modelKey)
+            return await DuplicateAllAsync(_options.Project, modelKey, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> DuplicateAllAsync(string project, string modelKey, string id, CancellationToken cancellation = default)
+        {
+            var request = CreateContentRequest(project, modelKey, "{id}/duplicate")
+                               .AddUrlSegment("id", id)
                                .AddJsonBody(
                                    new
                                    {
@@ -198,76 +154,83 @@ namespace Atlas.Core
             return (await PostAsync<KeyResult<IEnumerable<string>>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Get the content with the ID provided
-        /// </summary>
-        /// <typeparam name="T">The type of Attributes of the content</typeparam>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of the content to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Content{T}"/> with the Attribute as <see cref="T"/>.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Content<T>> GetContent<T>(string modelKey, string id, CancellationToken cancellation = default) where T : class
+        /// <inheritdoc/>
+        public async Task<Content<T>> GetContentAsync<T>(string modelKey, string id, CancellationToken cancellation = default) where T : class
         {
-            var request = new RestRequest("/api/contents/{model}/{id}").AddUrlSegment("model", modelKey).AddUrlSegment("id", id);
+            return await GetContentAsync<T>(_options.Project, modelKey, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Content<T>> GetContentAsync<T>(string project, string modelKey, string id, CancellationToken cancellation = default) where T : class
+        {
+            var request = CreateContentRequest(project, modelKey, "{id}").AddUrlSegment("id", id);
 
             return await GetAsync<Content<T>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the content with the ID provided
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of the content to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Content{T}"/> with the Attribute as <see cref="T"/>.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Content<Dictionary<string, object>>> GetContent(string modelKey, string id, CancellationToken cancellation = default)
+
+        /// <inheritdoc/>
+        public async Task<Content<Dictionary<string, object>>> GetContentAsync(string modelKey, string id, CancellationToken cancellation = default)
         {
-            return await GetContent<Dictionary<string, object>>(modelKey, id, cancellation);
+            return await GetContentAsync(_options.Project, modelKey, id, cancellation);
         }
 
-        /// <summary>
-        /// Get the paginated list of contents 
-        /// </summary>
-        /// <typeparam name="T">The type of Attributes of the content</typeparam>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="query">The optional <see cref="ContentsQuery"/> to filter the contents.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="PagedList{T}"/> with paging information and the list of <see cref="Content{T}"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<Content<T>>> GetContents<T>(string modelKey, ContentsQuery query, CancellationToken cancellation = default) where T : class
+        /// <inheritdoc/>
+        public async Task<Content<Dictionary<string, object>>> GetContentAsync(string project, string modelKey, string id, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/contents/{model}").AddUrlSegment("model", modelKey).AddQuery(query);
+            return await GetContentAsync<Dictionary<string, object>>(project, modelKey, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<PagedList<Content<T>>> GetContentsAsync<T>(string modelKey, ContentsQuery query, CancellationToken cancellation = default) where T : class
+        {
+            return await GetContentsAsync<T>(_options.Project, modelKey, query, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<PagedList<Content<T>>> GetContentsAsync<T>(string project, string modelKey, ContentsQuery query, CancellationToken cancellation = default) where T : class
+        {
+            var request = CreateContentRequest(project, modelKey, "").AddQuery(query);
 
             return await GetAsync<PagedList<Content<T>>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the paginated list of contents 
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="query">The optional <see cref="ContentsQuery"/> to filter the contents.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="PagedList{T}"/> with paging information and the list of <see cref="Content{T}"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<Content<Dictionary<string, object>>>> GetContents(string modelKey, ContentsQuery query, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<PagedList<Content<Dictionary<string, object>>>> GetContentsAsync(string modelKey, ContentsQuery query, CancellationToken cancellation = default)
         {
-            return await GetContents<Dictionary<string, object>>(modelKey, query, cancellation);
+            return await GetContentsAsync<Dictionary<string, object>>(_options.Project, modelKey, query, cancellation);
         }
 
-        /// <summary>
-        /// Update a content for a specific Model and ID
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="modelKey">The ID of content to update.</param>
-        /// <param name="content">The object to serialize in the Attributes prop of a Content.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateContent<T>(string modelKey, string id, T content, CancellationToken cancellation = default) where T : class
+        /// <inheritdoc/>
+        public async Task<PagedList<Content<Dictionary<string, object>>>> GetContentsAsync(string project, string modelKey, ContentsQuery query, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/contents/{model}/{id}")
-                                .AddUrlSegment("model", modelKey)
+            return await GetContentsAsync<Dictionary<string, object>>(project, modelKey, query, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> CountContentsAsync(string modelKey, ContentsQuery query, CancellationToken cancellation = default)
+        {
+            return await CountContentsAsync(_options.Project, modelKey, query, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> CountContentsAsync(string project, string modelKey, ContentsQuery query, CancellationToken cancellation = default)
+        {
+            var request = CreateContentRequest(project, modelKey, "count").AddQuery(query);
+
+            return (await GetAsync<KeyResult<int>>(request, cancellation)).Result;
+        }
+
+        /// <inheritdoc/>
+        public async Task UpdateContentAsync<T>(string modelKey, string id, T content, CancellationToken cancellation = default) where T : class
+        {
+            await UpdateContentAsync<T>(_options.Project, modelKey, id, content, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task UpdateContentAsync<T>(string project, string modelKey, string id, T content, CancellationToken cancellation = default) where T : class
+        {
+            var request = CreateContentRequest(modelKey, "{id}", "")
                                 .AddUrlSegment("id", id)
                                 .AddJsonBody(
                                     new
@@ -279,80 +242,77 @@ namespace Atlas.Core
             await PutAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Update a content for a specific Model and ID
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of content to update.</param>
-        /// <param name="content">The <see cref="Dictionary{TKey, TValue}"/> to serialize in the Attributes prop of a Content.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UpdateContent(string modelKey, string id, Dictionary<string, object> content, CancellationToken cancellation = default)
+
+        /// <inheritdoc/>
+        public async Task UpdateContentAsync(string modelKey, string id, Dictionary<string, object> content, CancellationToken cancellation = default)
         {
-            await UpdateContent<Dictionary<string, object>>(modelKey, id, content, cancellation);
+            await UpdateContentAsync<Dictionary<string, object>>(_options.Project, modelKey, id, content, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task UpdateContentAsync(string project, string modelKey, string id, Dictionary<string, object> content, CancellationToken cancellation = default)
+        {
+            await UpdateContentAsync<Dictionary<string, object>>(modelKey, id, content, cancellation);
         }
 
         #endregion
 
         #region -- assets --
 
-        /// <summary>
-        /// Get the media with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the media to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Asset"/> object.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Asset> GetAsset(string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<Asset> GetAssetAsync(string id, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/media/{id}").AddUrlSegment("id", id);
+            return await GetAssetAsync(_options.Project, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Asset> GetAssetAsync(string project, string id, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaRequest(project, "{id}").AddUrlSegment("id", id);
 
             return await GetAsync<Asset>(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the paginated list of media 
-        /// </summary>
-        /// <param name="query">The optional <see cref="AssetsQuery"/> to filter the media.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="PagedList{Asset}"/> with paging information and the list of <see cref="Asset"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<Asset>> GetAssets(AssetsQuery query, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<PagedList<Asset>> GetAssetsAsync(AssetsQuery query, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/media").AddQuery(query);
+            return await GetAssetsAsync(_options.Project, query, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<PagedList<Asset>> GetAssetsAsync(string project, AssetsQuery query, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaRequest(project, "").AddQuery(query);
 
             return await GetAsync<PagedList<Asset>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Set the tags to an Asset
-        /// </summary>
-        /// <param name="id">The ID of the media to fetch.</param>
-        /// <param name="tags">The list of tags to assign.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the media created</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task SetAssetTags(string id, IEnumerable<string> tags, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task SetAssetTagsAsync(string id, IEnumerable<string> tags, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/media/{id}/tags")
+            await SetAssetTagsAsync(_options.Project, id, tags, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task SetAssetTagsAsync(string project, string id, IEnumerable<string> tags, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaRequest(project, "{id}/tags")
                                 .AddUrlSegment("id", id)
                                 .AddJsonBody(new { tags = tags });
 
             await PostAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Upload a media to the Media Library
-        /// </summary>
-        /// <param name="fileName">The name of the file to store in the Media Library.</param>
-        /// <param name="bytes">The bytes array of the file to send.</param>
-        /// <param name="folder">The full path of the folder where to store the file.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the media created</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> UploadAsset(string fileName, byte[] bytes, string folder = "/", CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<string> UploadAssetAsync(string fileName, byte[] bytes, string folder = "/", CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/media/upload")
+            return await UploadAssetAsync(_options.Project, fileName, bytes, folder, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> UploadAssetAsync(string project, string fileName, byte[] bytes, string folder = "/", CancellationToken cancellation = default)
+        {
+            var request = CreateMediaRequest(project, "upload")
                                 .AddHeader("Content-Type", "multipart/form-data")
                                 .AddParameter("folder", folder, ParameterType.RequestBody)
                                 .AddFile("file", bytes, fileName);
@@ -360,17 +320,16 @@ namespace Atlas.Core
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Upload a media to the Media Library
-        /// </summary>
-        /// <param name="filePath">The full path of the local file to upload.</param>
-        /// <param name="folder">The full path of the folder where to store the file.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The ID of the media created</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> UploadAsset(string filePath, string folder = "/", CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<string> UploadAssetAsync(string filePath, string folder = "/", CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/media/upload")
+            return await UploadAssetAsync(_options.Project, filePath, folder, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> UploadAssetAsync(string project, string filePath, string folder = "/", CancellationToken cancellation = default)
+        {
+            var request = CreateMediaRequest(project, "upload")
                                 .AddHeader("Content-Type", "multipart/form-data")
                                 .AddParameter("folder", folder, ParameterType.RequestBody)
                                 .AddFile("file", filePath);
@@ -378,15 +337,16 @@ namespace Atlas.Core
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Download the media with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the media to delete.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The bytes array of the media of null if the ID has not been found.</returns>
-        public async Task<byte[]> DownloadAsset(string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<byte[]> DownloadAssetAsync(string id, CancellationToken cancellation = default)
         {
-            var asset = await GetAsset(id, cancellation);
+            return await DownloadAssetAsync(_options.Project, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<byte[]> DownloadAssetAsync(string project, string id, CancellationToken cancellation = default)
+        {
+            var asset = await GetAssetAsync(project, id, cancellation);
 
             if (asset != null)
             {
@@ -396,15 +356,16 @@ namespace Atlas.Core
             return null;
         }
 
-        /// <summary>
-        /// Download the stream of the media with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the media to delete.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The Stream of the media of null if the ID has not been found.</returns>
-        public async Task<Stream> DownloadAssetStream(string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<Stream> DownloadAssetStreamAsync(string id, CancellationToken cancellation = default)
         {
-            var asset = await GetAsset(id, cancellation);
+            return await DownloadAssetStreamAsync(_options.Project, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Stream> DownloadAssetStreamAsync(string project, string id, CancellationToken cancellation = default)
+        {
+            var asset = await GetAssetAsync(project, id, cancellation);
 
             if (asset != null)
             {
@@ -414,176 +375,187 @@ namespace Atlas.Core
             return null;
         }
 
-        /// <summary>
-        /// Delete the media with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the media to delete.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteAsset(string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task DeleteAssetAsync(string id, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/media/{id}").AddUrlSegment("id", id);
+            await DeleteAssetAsync(_options.Project, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteAssetAsync(string project, string id, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaRequest(project, "{id}").AddUrlSegment("id", id);
 
             await DeleteAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the full structure of folders
-        /// </summary>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="List{Folder}"/>.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Folder>> GetAllFolders(CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<List<Folder>> GetAllFoldersAsync(CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/folders");
+            return await GetAllFoldersAsync(_options.Project, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<List<Folder>> GetAllFoldersAsync(string project, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaFoldersRequest(project, "");
 
             return await GetAsync<List<Folder>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Create a folder in the Media Library
-        /// </summary>
-        /// <param name="folder">The full path of the folder to create.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The full path of the folder created</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> CreateFolder(string folder, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<string> CreateFolderAsync(string folder, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/folders").AddJsonBody(new { folder = folder });
+            return await CreateFolderAsync(_options.Project, folder, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> CreateFolderAsync(string project, string folder, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaFoldersRequest(project, "").AddJsonBody(new { folder = folder });
 
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Rename a folder
-        /// </summary>
-        /// <param name="folder">The full path of the folder to move.</param>
-        /// <param name="newName">The new name of the folder.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The full path of the renamed.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> RenameFolder(string folder, string newName, CancellationToken cancellation = default)
+
+        /// <inheritdoc/>
+        public async Task<string> RenameFolderAsync(string folder, string newName, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/folders/rename").AddJsonBody(new { folder = folder, newName = newName });
+            return await RenameFolderAsync(_options.Project, folder, newName, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> RenameFolderAsync(string project, string folder, string newName, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaFoldersRequest(project, "rename").AddJsonBody(new { folder = folder, newName = newName });
 
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Move a folder under another path
-        /// </summary>
-        /// <param name="folder">The full path of the folder to move.</param>
-        /// <param name="moveTo">The full path of the destination parent folder.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The full path of the moved folder.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<string> MoveFolder(string folder, string moveTo, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<string> MoveFolderAsync(string folder, string moveTo, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/folders/move").AddJsonBody(new { folder = folder, moveTo = moveTo });
+            return await MoveFolderAsync(_options.Project, folder, moveTo, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<string> MoveFolderAsync(string project, string folder, string moveTo, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaFoldersRequest(project, "move").AddJsonBody(new { folder = folder, moveTo = moveTo });
 
             return (await PostAsync<KeyResult<string>>(request, cancellation)).Result;
         }
 
-        /// <summary>
-        /// Delete a folder in the Media Library
-        /// </summary>
-        /// <param name="folder">The full path of the folder to delete.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task DeleteFolder(string folder, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task DeleteFolderAsync(string folder, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/media-library/folders").AddQueryParameter("folder", folder);
+            await DeleteFolderAsync(_options.Project, folder, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteFolderAsync(string project, string folder, CancellationToken cancellation = default)
+        {
+            var request = CreateMediaFoldersRequest(project, "").AddQueryParameter("folder", folder);
 
             await DeleteAsync(request, cancellation);
         }
 
         #endregion
 
-        /// <summary>
-        /// Get the model with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the model to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Model"/> object.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Model> GetModel(string id, CancellationToken cancellation = default)
+        #region -- models --
+
+        /// <inheritdoc/>
+        public async Task<Model> GetModelAsync(string id, CancellationToken cancellation = default)
+        {
+            return await GetModelAsync(_options.Project, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Model> GetModelAsync(string project, string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/models/{id}").AddUrlSegment("id", id);
 
             return await GetAsync<Model>(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the list of models
-        /// </summary>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The list of <see cref="Model"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Model>> GetAllModels(CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<List<Model>> GetAllModelsAsync(CancellationToken cancellation = default)
         {
-            return (await GetModels(new ModelsQuery { Size = int.MaxValue }, cancellation)).Data.ToList();
+            return await GetAllModelsAsync(_options.Project, cancellation);
         }
 
-        /// <summary>
-        /// Get the paged list of models
-        /// </summary>
-        /// <param name="query">The optional <see cref="ModelsQuery"/> to filter the media.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="PagedList{Model}"/> with paging information and the list of <see cref="Model"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<Model>> GetModels(ModelsQuery query, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<List<Model>> GetAllModelsAsync(string project, CancellationToken cancellation = default)
+        {
+            return (await GetModelsAsync(new ModelsQuery { Size = int.MaxValue }, cancellation)).Data.ToList();
+        }
+
+        /// <inheritdoc/>
+        public async Task<PagedList<Model>> GetModelsAsync(ModelsQuery query, CancellationToken cancellation = default)
+        {
+            return await GetModelsAsync(_options.Project, query, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<PagedList<Model>> GetModelsAsync(string project, ModelsQuery query, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/models").AddQuery(query);
 
             return await GetAsync<PagedList<Model>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the component with the ID provided
-        /// </summary>
-        /// <param name="id">The ID of the component to fetch.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="Component"/> object.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<Component> GetComponent(string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<Component> GetComponentAsync(string id, CancellationToken cancellation = default)
         {
-            var request = new RestRequest("/api/content-types/components/{id}").AddUrlSegment("id",id);
+            return await GetComponentAsync(_options.Project, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Component> GetComponentAsync(string project, string id, CancellationToken cancellation = default)
+        {
+            var request = new RestRequest("/api/content-types/components/{id}").AddUrlSegment("id", id);
 
             return await GetAsync<Component>(request, cancellation);
         }
 
-        /// <summary>
-        /// Get the list of components
-        /// </summary>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The list of <see cref="Component"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<List<Component>> GetAllComponents(CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<List<Component>> GetAllComponentsAsync(CancellationToken cancellation = default)
         {
-            return (await GetComponents(new ComponentsQuery { Size = int.MaxValue }, cancellation)).Data.ToList();
+            return await GetAllComponentsAsync(_options.Project, cancellation);
         }
 
-        /// <summary>
-        /// Get the paged list of components
-        /// </summary>
-        /// <param name="query">The optional <see cref="ComponentsQuery"/> to filter the media.</param>
-        /// <param name="cancellation">The optional cancellation token to cancel the operation.</param>
-        /// <returns>The <see cref="PagedList{Component}"/> with paging information and the list of <see cref="Component"/> objects.</returns>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task<PagedList<Component>> GetComponents(ComponentsQuery query, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task<List<Component>> GetAllComponentsAsync(string project, CancellationToken cancellation = default)
+        {
+            return (await GetComponentsAsync(project, new ComponentsQuery { Size = int.MaxValue }, cancellation)).Data.ToList();
+        }
+
+        /// <inheritdoc/>
+        public async Task<PagedList<Component>> GetComponentsAsync(ComponentsQuery query, CancellationToken cancellation = default)
+        {
+            return await GetComponentsAsync(_options.Project, query, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<PagedList<Component>> GetComponentsAsync(string project, ComponentsQuery query, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/content-types/components").AddQuery(query);
 
             return await GetAsync<PagedList<Component>>(request, cancellation);
         }
 
-        /// <summary>
-        /// Publish a content
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of content to update.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task PublishContent(string modelKey, string id, CancellationToken cancellation = default)
+        #endregion
+
+        #region -- publishing --
+
+        /// <inheritdoc/>
+        public async Task PublishContentAsync(string modelKey, string id, CancellationToken cancellation = default)
+        {
+            await PublishContentAsync(_options.Project, modelKey, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task PublishContentAsync(string project, string modelKey, string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/contents/{model}/{id}/publish")
                                 .AddUrlSegment("model", modelKey)
@@ -592,13 +564,14 @@ namespace Atlas.Core
             await PostAsync(request, cancellation);
         }
 
-        /// <summary>
-        /// Unpublish a content
-        /// </summary>
-        /// <param name="modelKey">The Key of the Model.</param>
-        /// <param name="id">The ID of content to update.</param>
-        /// <exception cref="AtlasException">The API Exception returned.</exception>
-        public async Task UnpublishContent(string modelKey, string id, CancellationToken cancellation = default)
+        /// <inheritdoc/>
+        public async Task UnpublishContentAsync(string modelKey, string id, CancellationToken cancellation = default)
+        {
+            await UnpublishContentAsync(_options.Project, modelKey, id, cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task UnpublishContentAsync(string project, string modelKey, string id, CancellationToken cancellation = default)
         {
             var request = new RestRequest("/api/contents/{model}/{id}/unpublish")
                                 .AddUrlSegment("model", modelKey)
@@ -606,5 +579,41 @@ namespace Atlas.Core
 
             await PostAsync(request, cancellation);
         }
+
+        #endregion
+
+        #region --  helpers --
+
+        protected RestRequest CreateContentRequest(string project, string model, string resource)
+        {
+            if (!string.IsNullOrEmpty(resource))
+            {
+                return CreateProjectRequest(project, $"contents/{model}/{resource.TrimStart('/')}");
+            }
+
+            return CreateProjectRequest(project, $"contents/{model}");
+        }
+
+        protected RestRequest CreateMediaRequest(string project, string resource)
+        {
+            if (!string.IsNullOrEmpty(resource))
+            {
+                return CreateProjectRequest(project, $"media-library/media/{resource.TrimStart('/')}");
+            }
+
+            return CreateProjectRequest(project, $"media-library/media");
+        }
+
+        protected RestRequest CreateMediaFoldersRequest(string project, string resource)
+        {
+            if (!string.IsNullOrEmpty(resource))
+            {
+                return CreateProjectRequest(project, $"media-library/folders/{resource.TrimStart('/')}");
+            }
+
+            return CreateProjectRequest(project, $"media-library/folders");
+        }
+
+        #endregion
     }
 }
