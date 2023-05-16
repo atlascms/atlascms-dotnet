@@ -3,7 +3,7 @@ This is the Atlas Headless CMS .NET Client SDK (Preview)
 
 **!!! NOTE !!!**
 
-**AtlasCMS is planning to be RTM for all by Jan '23.
+**AtlasCMS is planning to be RTM for all by Q3 '23.
 We are currently on RC phase with just selected customers and professionals working with it.
 We decided to don't have a WebSite or Documentation online as far as we go RTM.**
 
